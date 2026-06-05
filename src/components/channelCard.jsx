@@ -16,9 +16,9 @@ const ChannelCard=({channel})=>{
             return;
         }
         try {
-            const response=await apiClient.get(`/subscriptions/channel`,{
+            const response=await apiClient.get(`/users/channel`,{
                 params:{
-                    username:channel?.userName
+                    username:channel?.username
                 }
             });
             setIsSubscribed(Boolean(response.data.data.isSubscribed));
