@@ -1,7 +1,7 @@
-import React from "react";
+import React,{useState} from "react";
 import {useAuth} from '../context/AuthContext'
 import { Search,EllipsisVertical, Plus } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 const Navbar=()=>{
     const {user,loading}=useAuth();
     const navigate=useNavigate();

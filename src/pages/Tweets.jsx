@@ -1,35 +1,33 @@
 import React,{useRef,useEffect,useState} from "react";
-import { useNavigate,useSearchParams } from "react-router-dom";
-import VideoCard from '../components/VideoCard.jsx'
+import { useNavigate } from "react-router-dom";
+import TweetCard from '../components/TweetCard.jsx'
 import apiClient from '../services/api.js'
-const Home=()=>{
+const Tweets=()=>{
     const navigate=useNavigate();
     const sentinelRef=useRef(null);
-    const [videos,setVideos]=useState([]);
+    const [tweets,setTweets]=useState([]);
     const [page,setPage]=useState(1);
     const [hasMore,setHasMore]=useState(true);
     const [loading,setLoading]=useState(false);
     const [initialLoading,setInitialLoading]=useState(true);
     const [error,setError]=useState("");
-    const [searchParams]=useSearchParams();
-    const query=searchParams.get("q") || "";
-    const fetchVideos=async (pageNumber)=>{
+    const fetchTweets=async (pageNumber)=>{
         try{
             setLoading(true);
             setError("");
-            const response=await apiClient.get("/videos",{
+            const response=await apiClient.get("/tweets",{
                 params:{
-                    page:pageNumber,limit:12,query
+                    page:pageNumber,limit:12
                 }
             });
             const responseData=response.data.data;
-            const newVideos=responseData.videos;
+            const newTweets=responseData.tweets;
             const nextPageHasMore=responseData.hasMore;
-            setVideos((prev)=>(pageNumber===1)?newVideos:[...prev,...newVideos])
+            setTweets((prev)=>(pageNumber===1)?newTweets:[...prev,...newTweets])
             setHasMore(Boolean(nextPageHasMore));
         }
         catch(err){
-            setError("Failed to load videos");
+            setError("Failed to load tweets");
             setHasMore(false);
         }
         finally{
@@ -38,8 +36,8 @@ const Home=()=>{
         }
     }
     useEffect(()=>{
-        fetchVideos(1)
-    },[query])
+        fetchTweets(1)
+    },[])
     useEffect(()=>{
         if (!sentinelRef.current || !hasMore || loading) return;
         const observer= new IntersectionObserver(
@@ -58,7 +56,7 @@ const Home=()=>{
     },[hasMore,loading]);
     useEffect(() => {
         if (page === 1) return;
-        fetchVideos(page);
+        fetchTweets(page);
     }, [page]);
     const handleNavigation = (targetPath) => {
         const encodedQuery = encodeURIComponent(query);
@@ -67,8 +65,8 @@ const Home=()=>{
     return(
         <main>
             <div>
-                <button type="button" onClick={() => handleNavigation("/tweets")}>
-                    Tweets
+                <button type="button" onClick={() => handleNavigation("")}>
+                    Videos
                 </button>
                 <button type="button" onClick={() => handleNavigation("/channels")}>
                     Channels
@@ -80,18 +78,18 @@ const Home=()=>{
             {error ? <p>{error}</p> : null}
             <section>
                 {initialLoading?(
-                    <p>Loading Videos...</p>
+                    <p>Loading Tweets...</p>
                 ):(
                     <div>
-                        {videos.map((video)=>(
-                            <VideoCard key={video._id} video={video}/>
+                        {tweets.map((tweet)=>(
+                            <TweetCard key={tweet._id} tweet={tweet}/>
                         ))}
                     </div>
                 )}
             </section>
-            {loading && !initialLoading?<p>Loading more videos</p>:null}
+            {loading && !initialLoading}? <p>Loading more tweets</p>:null;
             <div ref={sentinelRef}></div>
         </main>
     )
 }
-export default Home;
+export default Tweets;
