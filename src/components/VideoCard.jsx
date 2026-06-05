@@ -1,10 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-const pluralize=(value,unit)=>`${value}${unit}${value==1?"":"s"} ago`;
+const pluralize=(value,unit)=>`${value} ${unit}${value==1?"":"s"} ago`;
 const formatRelativeTime=(createdAt)=>{
     const createdDate=new Date(createdAt);
     if(Number.isNaN(createdDate.getTime())) return "";
-    const diffMs=math.max(0,Date.now()-createdDate.getTime());
+    const diffMs=Math.max(0,Date.now()-createdDate.getTime());
     const seconds=Math.floor(diffMs/1000);
     if(seconds<60) return pluralize(seconds,"second");
     const minutes=Math.floor(seconds/60);
@@ -24,6 +24,7 @@ const VideoCard=({video})=>{
     const owner = video.owner;
     const ownerId = owner._id;
     const title = video.title;
+    const username=owner.userName;
     const fullname = owner.fullName
     const avatar = owner.avatar
     const thumbnail = video.thumbnail;
@@ -34,7 +35,7 @@ const VideoCard=({video})=>{
             navigate(`/channel/${ownerId}`);
         }
     return (
-        <article onClick={()=>navigate(`/channel/${ownerId}`)}>
+        <article onClick={()=>navigate(`/videos/:${video._id}`)}>
             <div>
                 <img src={thumbnail} alt={title}/>
             </div>
