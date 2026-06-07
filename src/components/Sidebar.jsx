@@ -1,7 +1,7 @@
 import React,{useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import apiClient from '../services/api.js'
-const sidebar=()=>{
+const Sidebar=()=>{
     const navigate=useNavigate();
     const {user}=useAuth();
     const [isCollapsed,setIsCollapsed]=useState(false)
@@ -103,4 +103,4 @@ const sidebar=()=>{
         </aside>
     )
 }
-export default sidebar;
+export default Sidebar;
