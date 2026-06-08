@@ -21,8 +21,8 @@ const formatRelativeTime=(createdAt)=>{
     const years=Math.floor(months/12);
     return pluralize(years,"year");
 }
-const CommentCard=(comment,onDeleteRequest,onUnAuthAction)=>{
-    const user=useAuth();    
+const CommentCard=({comment,onDeleteRequest,onUnAuthAction})=>{
+    const {user}=useAuth();    
     const navigate=useNavigate();
     const commentId=comment._id;
     const owner=comment.owner;
@@ -40,7 +40,7 @@ const CommentCard=(comment,onDeleteRequest,onUnAuthAction)=>{
     const isOwner = user && user._id === owner._id;
     const handleLike= async ()=>{
         if (!user) {
-            if (onUnauthAction) onUnauthAction();
+            if (onUnAuthAction) onUnAuthAction();
             return;
         }
         try {
