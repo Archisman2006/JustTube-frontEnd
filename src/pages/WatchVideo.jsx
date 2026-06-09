@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ThumbsUp,Bookmark,Plus,X } from "lucide-react";
+import { ThumbsUp,Bookmark,Plus,X,EllipsisVertical } from "lucide-react";
 import apiClient from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import PlaylistCard from '../components/PlaylistCard.jsx'
@@ -45,6 +45,8 @@ const WatchVideo=()=>{
     const [commentsRefreshKey, setCommentsRefreshKey] = useState(0);
     const [unAuthModalOpen, setUnAuthModalOpen] = useState(false);
     const [deleteModal, setDeleteModal] = useState({ isOpen: false, commentId: null });
+    const [isVideoActionsOpen, setIsVideoActionsOpen] = useState(false);
+    const [deleteVideoModal, setDeleteVideoModal] = useState({ isOpen: false, isConfirmed: false });
 
     const [isSaveMenuOpen, setIsSaveMenuOpen] = useState(false);
     const [isCreatePlaylistOpen, setIsCreatePlaylistOpen] = useState(false);
@@ -53,13 +55,13 @@ const WatchVideo=()=>{
     const [newPlaylist, setNewPlaylist] = useState({ name: '', description: '', visibility: 'public' });
 const [toast, setToast] = useState({ visible: false, message: '', type: 'success' });
     useEffect(() => {
-        if (unAuthModalOpen || deleteModal.isOpen) {
+        if (unAuthModalOpen || deleteModal.isOpen || deleteVideoModal.isOpen) {
             document.body.style.overflow = "hidden";
         } else {
             document.body.style.overflow = "auto";
         }
         return () => { document.body.style.overflow = "auto"; };
-    }, [unAuthModalOpen, deleteModal.isOpen,isSaveMenuOpen,isCreatePlaylistOpen]);
+    }, [unAuthModalOpen, deleteModal.isOpen, deleteVideoModal.isOpen, isSaveMenuOpen, isCreatePlaylistOpen]);
     // --- VideoPlayer Options ---
     const videoJsOptions = useMemo(() => {
         if (!video) return {};
@@ -72,27 +74,6 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
             sources: [{ src, type }]
         };
     }, [video]);
-    useEffect(() => {
-        if (!videoId) return;
-        const fetchVideo = async () => {
-            try {
-                setLoading(true);
-                // Standard REST for fetching a single item is usually GET
-                const response = await apiClient.post(`/videos/${videoId}`);
-                const videoData = response.data.data;
-                setVideo(videoData);
-                
-                // Initialize likes
-                setIsVideoLiked(videoData.isLikedByMe || false);
-                setVideoLikesCount(videoData.likesCount || 0);
-            } catch (error) {
-                console.error('Could not retrieve video:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchVideo();
-    }, [videoId]);
     useEffect(() => {
         if (!videoId) return;
         const fetchVideo = async () => {
@@ -183,6 +164,21 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
             console.error("Failed to delete comment");
         }
     };
+    const handleEditVideo = () => {
+        setIsVideoActionsOpen(false);
+        navigate(`/edit/video?q=${videoId}`);
+    };
+    const handleDeleteVideo = async () => {
+        if (!deleteVideoModal.isConfirmed) return;
+        try {
+            await apiClient.delete(`/videos/${videoId}`);
+            setDeleteVideoModal({ isOpen: false, isConfirmed: false });
+            setIsVideoActionsOpen(false);
+            navigate("/");
+        } catch (error) {
+            console.error("Failed to delete video");
+        }
+    };
     const handleBackdropClick = (e, closeFunction) => {
         if (e.target === e.currentTarget) closeFunction();
     };
@@ -206,6 +202,7 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
     const displayDescription = isDescExpanded || !isLongDescription 
         ? description 
         : `${description.slice(0, 50)}...`;
+    const isVideoOwner = Boolean(user  && video.owner._id=== user._id);
     return (
         <div className="min-h-screen bg-[#0f0f0f] text-white p-4">
             {/* Main Layout: Flex for Left Content, Sidebar for Right */}
@@ -226,7 +223,6 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                         <div className="w-full sm:w-auto">
                             <ChannelCard channel={video.owner} />
                         </div>
-                        
                         <div className="flex items-center">
                             <button 
                                 onClick={handleLike}
@@ -247,6 +243,39 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                                 <span>Save</span>
                             </button>
                         </div>
+                        {isVideoOwner && (
+                            <div className="relative ml-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsVideoActionsOpen((value) => !value)}
+                                    className="flex items-center justify-center w-10 h-10 bg-zinc-800 hover:bg-zinc-700 rounded-full transition"
+                                    aria-label="Video actions"
+                                >
+                                    <EllipsisVertical size={18} className="text-gray-300" />
+                                </button>
+                                {isVideoActionsOpen && (
+                                    <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-zinc-700 bg-zinc-900 shadow-2xl overflow-hidden z-20">
+                                        <button
+                                            type="button"
+                                            onClick={handleEditVideo}
+                                            className="w-full px-4 py-3 text-left text-sm font-semibold hover:bg-zinc-800 transition"
+                                        >
+                                            Edit video
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setIsVideoActionsOpen(false);
+                                                setDeleteVideoModal({ isOpen: true, isConfirmed: false });
+                                            }}
+                                            className="w-full px-4 py-3 text-left text-sm font-semibold hover:bg-zinc-800 transition text-red-400"
+                                        >
+                                            Delete video
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {/* 4. Expandable Description Section */}
@@ -381,6 +410,41 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                     <button 
                         onClick={handleDeleteCommentConfirm}
                         className="px-4 py-2 font-semibold bg-red-600 hover:bg-red-500 rounded text-white"
+                    >
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    )}
+    {/* Delete Video Confirmation Modal */}
+    {deleteVideoModal.isOpen && (
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+            onClick={(e) => handleBackdropClick(e, () => setDeleteVideoModal({ isOpen: false, isConfirmed: false }))}
+        >
+            <div className="bg-zinc-900 border border-zinc-700 p-6 rounded-xl max-w-sm w-full shadow-2xl mx-4">
+                <h3 className="text-xl font-bold mb-2">Permanently delete the video?</h3>
+                <label className="flex items-start gap-3 mb-6 text-sm text-gray-300 cursor-pointer select-none">
+                    <input
+                        type="checkbox"
+                        checked={deleteVideoModal.isConfirmed}
+                        onChange={(e) => setDeleteVideoModal((prev) => ({ ...prev, isConfirmed: e.target.checked }))}
+                        className="mt-1 h-4 w-4 rounded border-zinc-600 bg-zinc-800 text-red-600 focus:ring-red-600"
+                    />
+                    <span>I understand that deleting this video is permanent.</span>
+                </label>
+                <div className="flex justify-end gap-4">
+                    <button
+                        onClick={() => setDeleteVideoModal({ isOpen: false, isConfirmed: false })}
+                        className="px-4 py-2 font-semibold hover:bg-zinc-800 rounded"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleDeleteVideo}
+                        disabled={!deleteVideoModal.isConfirmed}
+                        className="px-4 py-2 font-semibold bg-red-600 hover:bg-red-500 rounded text-white disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Delete
                     </button>
