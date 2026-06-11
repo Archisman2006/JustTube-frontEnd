@@ -41,7 +41,7 @@ const PostVideo=()=>{
         payload.append('isPublished',formData.isPublished);
         payload.append('videoFile',formData.videoFile);
         if(files.thumbnail)
-            payload.append('thumbnail',formData.thumbnail);
+            payload.append('thumbnail',files.thumbnail);
         try {
             const response=await apiClient.post('/videos',payload);
             navigate(`videos/watch?q=${response.data.data.video._id}`);
@@ -104,7 +104,6 @@ const PostVideo=()=>{
                             checked={formData.isPublished}
                             onChange={handleCheckedBoxChange}
                             className={inputStyle}
-                            required
                         />
                     </div>
                     <div>
@@ -115,7 +114,6 @@ const PostVideo=()=>{
                             accept="image/*"
                             onChange={handleFileChange}
                             className={fileInputStyle}
-                            required
                         />
                     </div>
 
@@ -127,19 +125,20 @@ const PostVideo=()=>{
                             accept="video/*"
                             onChange={handleFileChange}
                             className={fileInputStyle}
+                            required
                         />
                     </div>
 
                     <button
                         type="submit"
-                        disabled={!isFormValid || isLoading}
+                        disabled={!isFormValid || loading}
                         className={`w-full py-3 mt-4 rounded font-bold uppercase tracking-wider transition-all duration-200 ${
                             isFormValid && !isLoading
                                 ? 'bg-red-600 text-white hover:bg-red-500 hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] cursor-pointer'
                                 : 'bg-black text-gray-500 border border-red-900 cursor-not-allowed opacity-70'
                         }`}
                     >
-                        {isLoading ? 'Processing...' : 'Post Video'}
+                        {loading ? 'Processing...' : 'Post Video'}
                     </button>
                 </form>
             </div>
