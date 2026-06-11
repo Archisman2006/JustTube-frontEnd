@@ -22,7 +22,7 @@ const EditVideo=()=>{
             setLoading(true);
             const response=await apiClient.get(`videos/${videoId}`);
             setVideo(response.data.data.video);
-            setFormData({title=video.title,description=video.description,isPublished=video.isPublished})
+            setFormData({title:video.title,description:video.description,isPublished:video.isPublished})
         } catch (error) {
             setError(err?.response?.data?.message || 
                 'Network error. Please check your connection and try again.');

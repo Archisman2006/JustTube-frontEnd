@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from "react";
 import { useNavigate,useParams } from "react-router-dom";
-import apiClient from '../context/AuthContext.jsx'
+import apiClient from '../services/api.js'
 import TweetCard from '../components/TweetCard.jsx'
 const ChannelTweets=()=>{
     const {username}=useParams();

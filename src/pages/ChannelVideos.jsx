@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from "react";
 import { useNavigate,useParams } from "react-router-dom";
-import apiClient from '../context/AuthContext.jsx'
+import apiClient from '../services/api.js'
 import VideoCard from '../components/VideoCard.jsx'
 const ChannelVideos=()=>{
     const {username}=useParams();

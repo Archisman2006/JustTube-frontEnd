@@ -1,7 +1,7 @@
 import react from "react";
 import SignIn from "../components/SignIn.jsx";
 import { useNavigate } from "react-router-dom";
-const SignIn=()=>{
+const SignIn1=()=>{
     const navigate=useNavigate();
     return (
         <div>
@@ -11,7 +11,7 @@ const SignIn=()=>{
                     Sign up
                 </button>
             </div>
-            <SignIn/>
+            <SignIn1/>
         </div>
     )
 }

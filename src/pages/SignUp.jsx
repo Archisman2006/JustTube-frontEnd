@@ -1,5 +1,5 @@
 import react from "react";
-import SignUp from "../components/SignUp.jsx";
+import SignUp1 from "../components/SignUp.jsx";
 import { useNavigate } from "react-router-dom";
 const SignUp=()=>{
     const navigate=useNavigate();
@@ -11,7 +11,7 @@ const SignUp=()=>{
                     Sign In
                 </button>
             </div>
-            <SignUp/>
+            <SignUp1/>
         </div>
     )
 }

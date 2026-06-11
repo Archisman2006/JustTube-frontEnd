@@ -9,7 +9,7 @@ const PostTweet=()=>{
         image:'',
     });
     const [files,setFiles]=useState({
-        image=null
+        image:null
     })
     const [error,setError]=useState(null);
     const [loading,setLoading]=useState(false);

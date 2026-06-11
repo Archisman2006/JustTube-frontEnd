@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from "react";
 import { useNavigate,useParams } from "react-router-dom";
-import apiClient from '../context/AuthContext.jsx'
+import apiClient from '../services/api.js'
 import PlaylistCard from '../components/PlaylistCard.jsx'
 const ChannelPlaylists=()=>{
     const {username}=useParams();
