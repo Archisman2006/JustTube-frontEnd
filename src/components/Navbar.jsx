@@ -1,7 +1,7 @@
 import React,{useState} from "react";
 import {useAuth} from '../context/AuthContext'
 import { Search,EllipsisVertical, Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 const Navbar=()=>{
     const {user,loading}=useAuth();
     const navigate=useNavigate();
@@ -10,7 +10,8 @@ const Navbar=()=>{
     const [isCreateOpen,setIsCreateOpen]=useState(false);
     const avatarSrc=user?.avatar || "";
     const displayName=user?.username || "User";
-
+    console.log(user);
+    console.log(loading);
     const handleSearch=(e)=>{
         e.preventDefault();
         const trimmed=query.trim();
@@ -27,6 +28,7 @@ const Navbar=()=>{
     }
     return (
         <header>
+            {user?.username}
             <div>
                 <Link to="/">JustTube</Link>
             </div>

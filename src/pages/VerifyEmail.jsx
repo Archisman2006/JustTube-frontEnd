@@ -57,15 +57,16 @@ const VerifyEmail=()=>{
         try {
             await apiClient.post('users/verify-email',{code});
             setInfo('email verified successfully');
-            navigate('/');
+            navigate('/signin');
         } catch (err) {
-            setError(err?.response?.data?.message || 'Verification failed. Please try again.');
+            console.log(err.response.data.message);
+            setError(err?.response?.data.message || 'Verification failed. Please try again.');
         }
         finally{
             setIsVerifying(false);
         }
     };
-    handleResend= async ()=>{
+    const handleResend= async ()=>{
         if(!email) {
             setError('Email not found. Please sign up again.'); return;
         }

@@ -1,7 +1,7 @@
 import react from "react";
-import SignIn from "../components/SignIn.jsx";
+import SignIn1 from "../components/SignIn.jsx";
 import { useNavigate } from "react-router-dom";
-const SignIn1=()=>{
+const SignIn=()=>{
     const navigate=useNavigate();
     return (
         <div>

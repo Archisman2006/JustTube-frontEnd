@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../services/api.js';
-
+import {useAuth} from '../context/AuthContext.jsx';
 const SignIn = () => {
     const navigate = useNavigate();
+    const {login}=useAuth();
     const [formData, setFormData] = useState({
         identifier: '',
         password: '',
@@ -24,13 +25,15 @@ const SignIn = () => {
         setIsLoading(true);
         setError('');
         try {
-            await apiClient.post('/users/login', {
+            const response=await apiClient.post('/users/login', {
                 identifier: formData.identifier,
                 password: formData.password,
             });
-
+            console.log(response);
+            login(response.data.data.user);
             navigate('/');
         } catch (err) {
+            console.log(err);
             setError(
                 err?.response?.data?.message ||
                 'Network error. Please check your connection and try again.'

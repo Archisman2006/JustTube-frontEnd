@@ -65,7 +65,7 @@ const SignUp=()=> {
         }
 
         try {
-            const { data, status } = await apiClient.post('/users/signup', payload);
+            const { data, status } = await apiClient.post('/users/register', payload);
             navigate('/verify-email',{state: { email: formData.email }});
         } catch (err) {
             setError(err?.response?.data?.message || 

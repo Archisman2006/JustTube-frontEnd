@@ -1,9 +1,12 @@
-import React,{useRef,useEffect,useState} from "react";
+import React,{useRef,useEffect,useState, use} from "react";
 import { useNavigate,useSearchParams } from "react-router-dom";
 import VideoCard from '../components/VideoCard.jsx'
 import apiClient from '../services/api.js'
+import {useAuth} from '../context/AuthContext.jsx'
 const Home=()=>{
     const navigate=useNavigate();
+    const {user}=useAuth();
+    console.log(user);
     const sentinelRef=useRef(null);
     const [videos,setVideos]=useState([]);
     const [page,setPage]=useState(1);
@@ -22,9 +25,10 @@ const Home=()=>{
                     page:pageNumber,limit:12,query
                 }
             });
+            console.log(response);
             const responseData=response.data.data;
-            const newVideos=responseData.videos;
-            const nextPageHasMore=responseData.hasMore;
+            const newVideos=responseData.docs;
+            const nextPageHasMore=responseData.hasNextPage;
             setVideos((prev)=>(pageNumber===1)?newVideos:[...prev,...newVideos])
             setHasMore(Boolean(nextPageHasMore));
         }
@@ -67,6 +71,7 @@ const Home=()=>{
     return(
         <main>
             <div>
+                {user && (<p>{user.username}</p>)}
                 <button type="button" onClick={() => handleNavigation("/tweets")}>
                     Tweets
                 </button>

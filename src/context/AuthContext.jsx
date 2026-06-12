@@ -8,7 +8,7 @@ export const AuthProvider=({children})=>{
     const fetchCurrentUser=async ()=>{
         try {
             const response=await apiClient.get("/users/current-user");
-            if(response.data && response.data.success=="true"){
+            if(response.data && response.data.success==true){
                 setUser(response.data.data.user)
             }
             else{
@@ -23,8 +23,12 @@ export const AuthProvider=({children})=>{
     useEffect(()=>{
         fetchCurrentUser()
     },[])
-    const login=(userData)=>setUser(userData);
-    const logout=()=>setUser(null)
+    const login=(userData)=>{
+        setUser(userData); setLoading(false);
+    }
+    const logout=()=>{
+        setUser(userData); setLoading(false);
+    }
     return (
         <AuthContext.Provider value={{user,loading,login,logout,refreshAuth:fetchCurrentUser}}>{children}</AuthContext.Provider>
     );
