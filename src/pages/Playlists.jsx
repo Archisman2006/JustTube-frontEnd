@@ -1,5 +1,5 @@
 import React,{useRef,useEffect,useState} from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useSearchParams } from "react-router-dom";
 import PlaylistCard from '../components/PlaylistCard.jsx'
 import apiClient from '../services/api.js'
 const Playlists=()=>{
@@ -11,6 +11,8 @@ const Playlists=()=>{
     const [loading,setLoading]=useState(false);
     const [initialLoading,setInitialLoading]=useState(true);
     const [error,setError]=useState("");
+    const [searchParams]=useSearchParams();
+    const query=searchParams.get("q") || "";
     const fetchPlaylists=async (pageNumber)=>{
         try{
             setLoading(true);
@@ -21,9 +23,9 @@ const Playlists=()=>{
                 }
             });
             const responseData=response.data.data;
-            const newPlaylists=responseData.playlists;
-            const nextPageHasMore=responseData.hasMore;
-            setTweets((prev)=>(pageNumber===1)?newPlaylists:[...prev,...newPlaylists])
+            const newPlaylists=responseData.docs;
+            const nextPageHasMore=responseData.hasNextPage;
+            setPlaylists((prev)=>(pageNumber===1)?newPlaylists:[...prev,...newPlaylists])
             setHasMore(Boolean(nextPageHasMore));
         }
         catch(err){
@@ -87,7 +89,7 @@ const Playlists=()=>{
                     </div>
                 )}
             </section>
-            {loading && !initialLoading}? <p>Loading more playlists</p>:null;
+            {loading && !initialLoading? <p>Loading more playlists</p>:null}
             <div ref={sentinelRef}></div>
         </main>
     )

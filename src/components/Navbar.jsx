@@ -10,8 +10,6 @@ const Navbar=()=>{
     const [isCreateOpen,setIsCreateOpen]=useState(false);
     const avatarSrc=user?.avatar || "";
     const displayName=user?.username || "User";
-    console.log(user);
-    console.log(loading);
     const handleSearch=(e)=>{
         e.preventDefault();
         const trimmed=query.trim();
@@ -20,11 +18,11 @@ const Navbar=()=>{
     }
     const handleCreateNavigate=(type)=>{
         setIsCreateOpen(false);
-        if(type==="video") navigate("/create/video");
-        if(type==="tweet") navigate("/create/tweet");
+        if(type==="video") navigate("/post/video");
+        if(type==="tweet") navigate("/post/tweet");
     }
     const handleProfileClick=()=>{
-        navigate(`/profile/${user?.username}`)
+        navigate(`/${user?.username}/videos`)
     }
     return (
         <header>

@@ -1,5 +1,5 @@
 import React,{useRef,useEffect,useState} from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useSearchParams } from "react-router-dom";
 import TweetCard from '../components/TweetCard.jsx'
 import apiClient from '../services/api.js'
 const Tweets=()=>{
@@ -11,6 +11,8 @@ const Tweets=()=>{
     const [loading,setLoading]=useState(false);
     const [initialLoading,setInitialLoading]=useState(true);
     const [error,setError]=useState("");
+    const [searchParams]=useSearchParams();
+    const query=searchParams.get("q") || "";
     const fetchTweets=async (pageNumber)=>{
         try{
             setLoading(true);
@@ -21,8 +23,9 @@ const Tweets=()=>{
                 }
             });
             const responseData=response.data.data;
-            const newTweets=responseData.tweets;
-            const nextPageHasMore=responseData.hasMore;
+            console.log(responseData);
+            const newTweets=responseData.docs;
+            const nextPageHasMore=responseData.hasNextPage;
             setTweets((prev)=>(pageNumber===1)?newTweets:[...prev,...newTweets])
             setHasMore(Boolean(nextPageHasMore));
         }
@@ -87,7 +90,7 @@ const Tweets=()=>{
                     </div>
                 )}
             </section>
-            {loading && !initialLoading}? <p>Loading more tweets</p>:null;
+            {loading && !initialLoading? <p>Loading more tweets</p>:null}
             <div ref={sentinelRef}></div>
         </main>
     )

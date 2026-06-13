@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React,{useState,useEffect,useRef} from "react";
 import { useNavigate,useParams } from "react-router-dom";
 import apiClient from '../services/api.js'
 import VideoCard from '../components/VideoCard.jsx'
@@ -16,14 +16,14 @@ const ChannelVideos=()=>{
         try{
             setLoading(true);
             setError("");
-            const response=await apiClient.get(`/dashboard/videos/:${username}`,{
+            const response=await apiClient.get(`/dashboard/videos/${username}`,{
                 params:{
                     page:pageNumber,limit:12
                 }
             });
             const responseData=response.data.data;
-            const newVideos=responseData.videos;
-            const nextPageHasMore=responseData.hasMore;
+            const newVideos=responseData.docs;
+            const nextPageHasMore=responseData.hasNextPage;
             setVideos((prev)=>(pageNumber===1)?newVideos:[...prev,...newVideos])
             setHasMore(Boolean(nextPageHasMore));
         }
@@ -60,15 +60,15 @@ const ChannelVideos=()=>{
         fetchVideos(page);
     }, [page]);
     const handleNavigation = (targetPath) => {
-        navigate(`/dashboard/${targetPath}`);
+        navigate(`/${username}/${targetPath}`);
     };
     return(
         <main>
             <div>
-                <button type="button" onClick={() => handleNavigation("/tweets")}>
+                <button type="button" onClick={() => handleNavigation("/videos")}>
                     Videos
                 </button>
-                <button type="button" onClick={() => handleNavigation("/channels")}>
+                <button type="button" onClick={() => handleNavigation("/tweets")}>
                     Tweets
                 </button>
                 <button type="button" onClick={() => handleNavigation("/playlists")}>

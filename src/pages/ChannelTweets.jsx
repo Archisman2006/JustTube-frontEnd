@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React,{useState,useEffect,useRef} from "react";
 import { useNavigate,useParams } from "react-router-dom";
 import apiClient from '../services/api.js'
 import TweetCard from '../components/TweetCard.jsx'
@@ -16,14 +16,14 @@ const ChannelTweets=()=>{
         try{
             setLoading(true);
             setError("");
-            const response=await apiClient.get(`/dashboard/tweets/:${username}`,{
+            const response=await apiClient.get(`/dashboard/tweets/${username}`,{
                 params:{
                     page:pageNumber,limit:12
                 }
             });
             const responseData=response.data.data;
-            const newTweets=responseData.tweets;
-            const nextPageHasMore=responseData.hasMore;
+            const newTweets=responseData.docs;
+            const nextPageHasMore=responseData.hasNextPAge;
             setTweets((prev)=>(pageNumber===1)?newTweets:[...prev,...newTweets])
             setHasMore(Boolean(nextPageHasMore));
         }
@@ -57,10 +57,10 @@ const ChannelTweets=()=>{
     },[hasMore,loading]);
     useEffect(() => {
         if (page === 1) return;
-        fetchtweets(page);
+        fetchTweets(page);
     }, [page]);
     const handleNavigation = (targetPath) => {
-        navigate(`/@${username}/${targetPath}`);
+        navigate(`/${username}/${targetPath}`);
     };
     return(
         <main>

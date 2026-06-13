@@ -22,8 +22,9 @@ const TweetCard=({tweet})=>{
     const navigate=useNavigate();
     const [showFullContent,setShowFullContent]=useState(false);
     if(!tweet) return null;
-    const owner=Video.owner;
+    const owner=tweet.owner;
     const tweetId=tweet._id;
+    console.log(tweet);
     const channelId=tweet.owner._id;
     const fullname=owner.fullname;
     const username=owner.username;

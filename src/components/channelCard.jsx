@@ -16,11 +16,8 @@ const ChannelCard=({channel})=>{
             return;
         }
         try {
-            const response=await apiClient.get(`/users/channel`,{
-                params:{
-                    username:channel?.username
-                }
-            });
+            const response=await apiClient.get(`/users/channel/${channel?.username}`);
+            console.log(response);
             setIsSubscribed(Boolean(response.data.data.isSubscribed));
         } catch (error) {
             setIsSubscribed(false);
@@ -31,7 +28,7 @@ const ChannelCard=({channel})=>{
 
     },[user?._id,channel?._id]);
     const openChannel = () => {
-    navigate(`/channel/${channel._id}`);
+    navigate(`/${channel.username}/videos`);
     };
     const handleSubscribeClick = async (e) => {
         e.stopPropagation();

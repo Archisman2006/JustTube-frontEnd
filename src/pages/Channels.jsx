@@ -1,5 +1,5 @@
 import React,{useRef,useEffect,useState} from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useSearchParams } from "react-router-dom";
 import ChannelCard from '../components/ChannelCard.jsx'
 import apiClient from '../services/api.js'
 const Channels=()=>{
@@ -11,22 +11,25 @@ const Channels=()=>{
     const [loading,setLoading]=useState(false);
     const [initialLoading,setInitialLoading]=useState(true);
     const [error,setError]=useState("");
+    const [searchParams]=useSearchParams();
+    const query=searchParams.get("q") || "";
     const fetchChannels=async (pageNumber)=>{
         try{
             setLoading(true);
             setError("");
-            const response=await apiClient.get("/channels",{
+            const response=await apiClient.get("/users",{
                 params:{
                     page:pageNumber,limit:12
                 }
             });
             const responseData=response.data.data;
-            const newChannels=responseData.channels;
-            const nextPageHasMore=responseData.hasMore;
-            setTweets((prev)=>(pageNumber===1)?newChannels:[...prev,...newChannels])
+            const newChannels=responseData.docs;
+            const nextPageHasMore=responseData.hasNextPage;
+            setChannels((prev)=>(pageNumber===1)?newChannels:[...prev,...newChannels])
             setHasMore(Boolean(nextPageHasMore));
         }
         catch(err){
+            console.log(err);
             setError("Failed to load channels");
             setHasMore(false);
         }
@@ -87,7 +90,7 @@ const Channels=()=>{
                     </div>
                 )}
             </section>
-            {loading && !initialLoading}? <p>Loading more channels</p>:null;
+            {loading && !initialLoading? <p>Loading more channels</p>:null}
             <div ref={sentinelRef}></div>
         </main>
     )

@@ -17,9 +17,7 @@ const Sidebar=()=>{
             }
             try {
                 setLoadingChannels(true);
-                console.log("Sending subscriberId to backend:", user._id, "Length:", user._id?.length);
                 const response=await apiClient.get("/subscriptions/subscribed-channels");
-                console.log(response);
                 setSubscribedChannels(response.data.data.docs);
             } catch (error) {
                 console.log(error)
@@ -51,9 +49,9 @@ const Sidebar=()=>{
                         <button type="button" onClick={()=>navigate("/subscriptions")}>
                             Subscriptions
                         </button>
-                        <button type="button" onClick={()=>navigate("/me")}>
+                        <div>
                             You
-                        </button>
+                        </div>
                     </div>
                 ):(
                     <div>
@@ -69,7 +67,7 @@ const Sidebar=()=>{
                             <div>
                                 {visibleChannels.map((channel)=>(
                                     <button key={channel._id} type="button"
-                                    onClick={()=>navigate(`channel/${channel._id}`)}>
+                                    onClick={()=>navigate(`/${channel.username}`/videos)}>
                                         {channel.username} {/*TODO: ADD AVATAR BESIDE CHANNEL NAME*/}
                                     </button>
                                 ))}
@@ -79,20 +77,18 @@ const Sidebar=()=>{
                             </div>
                         </section>
                         <section>
-                            <button type="button" onClick={()=>navigate("/you/videos")}>
-                                You
-                            </button>
                             <div>
-                                <button type="button" onClick={()=>navigate("/history")}>
+                                You
+                            </div>
+                            <div>
+                                <button type="button" onClick={()=>navigate("/you/history")}>
                                     History
                                 </button>
-                                <button type="button" onClick={()=>navigate("/playlists")}>
-                                    Playlists
-                                </button>
-                                <button type="button" onClick={()=>navigate("/liked-videos")}>
+                                <button type="button" onClick={()=>navigate("you/liked-videos")}>
                                     Liked Videos
                                 </button>
-                                <button type="button" onClick={()=>navigate("/your-videos")}>
+                                <button type="button" 
+                                onClick={()=>navigate(`/@${user?.username}/videos`)}>
                                     Your Videos
                                 </button>
                             </div>

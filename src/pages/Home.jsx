@@ -6,7 +6,6 @@ import {useAuth} from '../context/AuthContext.jsx'
 const Home=()=>{
     const navigate=useNavigate();
     const {user}=useAuth();
-    console.log(user);
     const sentinelRef=useRef(null);
     const [videos,setVideos]=useState([]);
     const [page,setPage]=useState(1);
@@ -25,7 +24,6 @@ const Home=()=>{
                     page:pageNumber,limit:12,query
                 }
             });
-            console.log(response);
             const responseData=response.data.data;
             const newVideos=responseData.docs;
             const nextPageHasMore=responseData.hasNextPage;

@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React,{useState,useEffect,useRef} from "react";
 import { useNavigate,useParams } from "react-router-dom";
 import apiClient from '../services/api.js'
 import PlaylistCard from '../components/PlaylistCard.jsx'
@@ -16,15 +16,15 @@ const ChannelPlaylists=()=>{
         try{
             setLoading(true);
             setError("");
-            const response=await apiClient.get(`/dashboard/playlists/:${username}`,{
+            const response=await apiClient.get(`/dashboard/playlists/${username}`,{
                 params:{
                     page:pageNumber,limit:12
                 }
             });
             const responseData=response.data.data;
-            const newPlaylists=responseData.playlists;
-            const nextPageHasMore=responseData.hasMore;
-            setTweets((prev)=>(pageNumber===1)?newPlaylists:[...prev,...newPlaylists])
+            const newPlaylists=responseData.docs;
+            const nextPageHasMore=responseData.hasNextPage;
+            setPlaylists((prev)=>(pageNumber===1)?newPlaylists:[...prev,...newPlaylists])
             setHasMore(Boolean(nextPageHasMore));
         }
         catch(err){
@@ -60,7 +60,7 @@ const ChannelPlaylists=()=>{
         fetchPlaylists(page);
     }, [page]);
     const handleNavigation = (targetPath) => {
-        navigate(`/@${username}/${targetPath}`);
+        navigate(`/${username}/${targetPath}`);
     };
     return(
         <main>
@@ -81,7 +81,7 @@ const ChannelPlaylists=()=>{
                     <p>Loading playlists...</p>
                 ):(
                     <div>
-                        {tweets.map((playlist)=>(
+                        {playlists.map((playlist)=>(
                             <PlaylistCard key={playlist._id} playlist={playlist}/>
                         ))}
                     </div>

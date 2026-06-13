@@ -31,21 +31,26 @@ const App=()=>{
                     <Route path="/" element={<Home/>}/>
                     <Route path="/signin" element={<SignIn/>}/>
                     <Route path="/signup" element={<SignUp/>}/>
-                    <Route path="/@:username/videos" element={<ChannelVideos/>}/>
-                    <Route path="/@:username/tweets" element={<ChannelTweets/>}/>
-                    <Route path="/@:username/playlists" element={<ChannelPlaylists/>}/>
+                    <Route path="/:username">
+                        <Route path="videos" element={<ChannelVideos/>}/>
+                        <Route path="tweets" element={<ChannelTweets/>}/>
+                        <Route path="playlists" element={<ChannelPlaylists/>}/>
+                    </Route>
                     <Route path="/watch" element={<WatchVideo/>} />
                     <Route path="/view" element={<ViewTweet/>}/>
                     <Route path="/playlist" element={<OpenPlaylist/>}/>
-                    <Route path="/channels" element={<Channels/>}/>
+                    <Route path="/search" element={<Home/>}/>
+                    <Route path="/search/channels" element={<Channels/>}/>
+                    <Route path="/search/tweets" element={<Tweets/>}/>
+                    <Route path="/search/playlists" element={<Playlists/>}/>
                     <Route path="/verify-email" element={<VerifyEmail/>}/>
                     <Route path="/you/history" element={<WatchHistory/>}/>
-                    <Route path="you/liked-videos" element={<LikedVideos/>}/>
-                    <Route path="post/video" element={<PostVideo/>}/>
-                    <Route path="post/tweet" element={<PostTweet/>}/>
-                    <Route path="edit/video" element={<EditVideo/>}/>
-                    <Route path="subscriptions" element={<FeedVideos/>}/>
-                    <Route path="subscriptions/channels" element={<FeedChannels/>}/>
+                    <Route path="/you/liked-videos" element={<LikedVideos/>}/>
+                    <Route path="/post/video" element={<PostVideo/>}/>
+                    <Route path="/post/tweet" element={<PostTweet/>}/>
+                    <Route path="/edit/video" element={<EditVideo/>}/>
+                    <Route path="/subscriptions" element={<FeedVideos/>}/>
+                    <Route path="/subscriptions/channels" element={<FeedChannels/>}/>
                 </Route>
             </Routes>
         </BrowserRouter>
