@@ -67,14 +67,26 @@ const Channels=()=>{
     };
     return(
         <main>
-            <div>
-                <button type="button" onClick={() => handleNavigation("")}>
+            <div className="flex justify-center items-center gap-4 mb-6">
+                <button 
+                    type="button" 
+                    onClick={() => handleNavigation("")}
+                    className="bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700/60 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-150 active:scale-95"
+                >
                     Videos
                 </button>
-                <button type="button" onClick={() => handleNavigation("/tweets")}>
+                <button 
+                    type="button" 
+                    onClick={() => handleNavigation("/tweets")}
+                    className="bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700/60 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-150 active:scale-95"
+                >
                     Tweets
                 </button>
-                <button type="button" onClick={() => handleNavigation("/playlists")}>
+                <button 
+                    type="button" 
+                    onClick={() => handleNavigation("/playlists")}
+                    className="bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700/60 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-150 active:scale-95"
+                >
                     Playlists
                 </button>
             </div>
