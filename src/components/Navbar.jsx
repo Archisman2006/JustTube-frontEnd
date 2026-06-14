@@ -44,67 +44,114 @@ const Navbar=()=>{
         if(!user) navigate('/');
     },[user])
     return (
-        <header>
-            {user?.username}
-            <div>
-                <Link to="/">JustTube</Link>
-            </div>
-            <form onSubmit={handleSearch}>
-                <div>
-                    <input type="text" value={query} 
-                    onChange={(e)=>setQuery(e.target.value)} 
-                    placeholder="search"/>
-                    <button
-                    type="submit" aria-label="Search">
-                        <Search size={18}/>
-                    </button>
+        <header className="sticky top-0 z-50 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800">
+            <div className="flex items-center justify-between px-6 py-3 gap-4">
+                <div className="flex items-center gap-3 shrink-0">
+                    <Link
+                        to="/"
+                        className="text-xl font-bold tracking-tight text-white hover:text-zinc-200 transition-colors"
+                    >
+                        JustTube
+                    </Link>
                 </div>
-            </form>
-            { user &&
-            <div>
-                <button type="button" 
-                onClick={()=>setIsMoreOpen((v)=>!v)}
-                aria-label="More options">
-                    <EllipsisVertical size={20}/>
-                </button>
-                {isMoreOpen && (
-                    <div>
-                        <button type="button" onClick={handleSignOut}>Sign Out</button>
-                    </div>
-                )}
-            </div>
-            }       
-            {!loading && user ?(
-                <>
-                    <div>
+
+                <form onSubmit={handleSearch} className="flex-1 max-w-2xl mx-4">
+                    <div className="flex items-center gap-1">
+                        <input
+                            type="text"
+                            value={query}
+                            onChange={(e)=>setQuery(e.target.value)}
+                            placeholder="Search"
+                            className="w-full bg-zinc-900 border border-zinc-700 rounded-full px-4 py-2 text-white placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 transition-colors"
+                        />
                         <button
-                        type="button" onClick={()=>setIsCreateOpen((v)=>!v)}>
-                            <Plus size={16}/>
-                            Create
+                            type="submit"
+                            aria-label="Search"
+                            className="hover:bg-zinc-800 rounded-full p-2 text-zinc-300 hover:text-white transition shrink-0"
+                        >
+                            <Search size={18}/>
                         </button>
-                        {isCreateOpen && (
-                            <div>
-                                <button onClick={()=>handleCreateNavigate("video")}>
-                                Post Video
-                                </button>
-                                <button onClick={()=>handleCreateNavigate("tweet")}>
-                                Post Tweet
+                    </div>
+                </form>
+
+                <div className="flex items-center gap-1 shrink-0">
+                    { user &&
+                    <div className="relative">
+                        <button
+                            type="button"
+                            onClick={()=>setIsMoreOpen((v)=>!v)}
+                            aria-label="More options"
+                            className="hover:bg-zinc-800 rounded-full p-2 text-zinc-300 hover:text-white transition"
+                        >
+                            <EllipsisVertical size={20}/>
+                        </button>
+                        {isMoreOpen && (
+                            <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-zinc-700 bg-zinc-900 py-1 shadow-xl shadow-black/40">
+                                <button
+                                    type="button"
+                                    onClick={handleSignOut}
+                                    className="w-full px-4 py-2.5 text-left text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition"
+                                >
+                                    Sign Out
                                 </button>
                             </div>
                         )}
                     </div>
-                    <button type="button" onClick={handleProfileClick}
-                    aria-label="open profile" title={displayName}>
-                        <img src={avatarSrc} alt={displayName}/>
-                    </button>
-                </>
-            ):(
-                <button type="button" onClick={()=>navigate("/signin")}>
-                    Sign In
-                </button>
-            )}
+                    }
+                    {!loading && user ?(
+                        <>
+                            <div className="relative">
+                                <button
+                                    type="button"
+                                    onClick={()=>setIsCreateOpen((v)=>!v)}
+                                    className="flex items-center gap-1.5 hover:bg-zinc-800 rounded-full px-3 py-2 text-zinc-300 hover:text-white transition"
+                                >
+                                    <Plus size={16}/>
+                                    Create
+                                </button>
+                                {isCreateOpen && (
+                                    <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-zinc-700 bg-zinc-900 py-1 shadow-xl shadow-black/40">
+                                        <button
+                                            onClick={()=>handleCreateNavigate("video")}
+                                            className="w-full px-4 py-2.5 text-left text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition"
+                                        >
+                                            Post Video
+                                        </button>
+                                        <button
+                                            onClick={()=>handleCreateNavigate("tweet")}
+                                            className="w-full px-4 py-2.5 text-left text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition"
+                                        >
+                                            Post Tweet
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                            <button
+                                type="button"
+                                onClick={handleProfileClick}
+                                aria-label="open profile"
+                                title={displayName}
+                                className="hover:bg-zinc-800 rounded-full p-1 text-zinc-300 hover:text-white transition"
+                            >
+                                <img
+                                    src={avatarSrc}
+                                    alt={displayName}
+                                    className="h-8 w-8 rounded-full object-cover ring-2 ring-zinc-700"
+                                />
+                            </button>
+                        </>
+                    ):(
+                        <button
+                            type="button"
+                            onClick={()=>navigate("/signin")}
+                            className="rounded-full border border-zinc-600 px-4 py-2 text-sm font-medium text-zinc-300 hover:bg-zinc-800 hover:text-white hover:border-zinc-500 transition"
+                        >
+                            Sign In
+                        </button>
+                    )}
+                </div>
+            </div>
         </header>
     )
 }
 export default Navbar;
-

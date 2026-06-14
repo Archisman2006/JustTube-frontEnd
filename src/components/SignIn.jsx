@@ -43,18 +43,18 @@ const SignIn = () => {
     };
 
     const inputStyle =
-        'w-full bg-black text-white border border-red-600 rounded p-3 focus:outline-none focus:ring-2 focus:ring-red-500 mb-5 placeholder-gray-500 transition-shadow';
-    const labelStyle = 'block text-white font-semibold mb-2 text-sm';
+        'w-full rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-zinc-500 focus:outline-none transition-colors mb-4';
+    const labelStyle = 'mb-1.5 block text-sm font-medium text-zinc-300';
 
     return (
-        <div className="min-h-screen bg-black flex items-center justify-center p-4">
-            <div className="bg-black border-2 border-red-600 rounded-xl p-8 w-full max-w-md shadow-[0_0_20px_rgba(220,38,38,0.2)]">
-                <h2 className="text-3xl font-bold text-white mb-6 text-center tracking-wide">
+        <div className="flex flex-1 items-center justify-center p-4 pb-12">
+            <div className="w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-900/60 p-8 shadow-xl shadow-black/30 backdrop-blur-sm">
+                <h2 className="mb-6 text-center text-2xl font-bold tracking-tight text-white">
                     SIGN IN
                 </h2>
 
                 {error && (
-                    <div className="bg-red-950 border border-red-500 text-red-200 px-4 py-3 rounded mb-6 text-sm font-medium">
+                    <div className="mb-6 rounded-lg border border-red-500/30 bg-red-950/40 px-4 py-3 text-sm text-red-300">
                         {error}
                     </div>
                 )}
@@ -89,10 +89,10 @@ const SignIn = () => {
                     <button
                         type="submit"
                         disabled={!isFormValid || isLoading}
-                        className={`w-full py-3 mt-4 rounded font-bold uppercase tracking-wider transition-all duration-200 ${
+                        className={`mt-2 w-full rounded-lg py-2.5 text-sm font-semibold transition-all duration-200 ${
                             isFormValid && !isLoading
-                                ? 'bg-red-600 text-white hover:bg-red-500 hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] cursor-pointer'
-                                : 'bg-black text-gray-500 border border-red-900 cursor-not-allowed opacity-70'
+                                ? 'bg-white text-zinc-950 hover:bg-zinc-200 cursor-pointer'
+                                : 'cursor-not-allowed bg-zinc-800 text-zinc-500'
                         }`}
                     >
                         {isLoading ? 'Processing...' : 'Sign In'}

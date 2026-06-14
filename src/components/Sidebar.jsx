@@ -33,62 +33,68 @@ const Sidebar=()=>{
     const toggleSidebar=()=>{
         setIsCollapsed((prev)=>!prev)
     }
+    const navButtonClass="w-full rounded-lg px-3 py-2.5 text-left text-sm text-zinc-400 hover:bg-zinc-800 hover:text-white transition";
     return(
-        <aside>
-            <div>
-                <button type="button" onClick={toggleSidebar}>
+        <aside className={`shrink-0 border-r border-zinc-800 bg-zinc-950/95 ${isCollapsed ? "w-48" : "w-64"} transition-all duration-300`}>
+            <div className="border-b border-zinc-800 p-3">
+                <button
+                    type="button"
+                    onClick={toggleSidebar}
+                    className="w-full rounded-lg px-3 py-2 text-sm font-medium text-zinc-300 hover:bg-zinc-800 hover:text-white transition"
+                >
                     {isCollapsed?"Expand":"Collapse"}
                 </button>
             </div>
-            <div>
+            <div className="overflow-y-auto p-3">
                 {isCollapsed ?(
-                    <div>
-                        <button type="button" onClick={()=>navigate("/")}>
+                    <div className="space-y-1">
+                        <button type="button" onClick={()=>navigate("/")} className={navButtonClass}>
                             Home
                         </button>
-                        <button type="button" onClick={()=>navigate("/subscriptions")}>
+                        <button type="button" onClick={()=>navigate("/subscriptions")} className={navButtonClass}>
                             Subscriptions
                         </button>
-                        <div>
+                        <div className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">
                             You
                         </div>
                     </div>
                 ):(
-                    <div>
-                        <section>
-                            <button type="button" onClick={()=>navigate("/")}>
+                    <div className="space-y-6">
+                        <section className="space-y-1">
+                            <button type="button" onClick={()=>navigate("/")} className={navButtonClass}>
                                 Home
                             </button>
                         </section>
-                        <section>
-                            <button type="button" onClick={()=>navigate("/subscriptions")}>
+                        <section className="space-y-1">
+                            <button type="button" onClick={()=>navigate("/subscriptions")} className={navButtonClass}>
                                 Subscriptions
                             </button>
-                            <div>
+                            <div className="mt-2 space-y-0.5 pl-1">
                                 {visibleChannels.map((channel)=>(
                                     <button key={channel._id} type="button"
-                                    onClick={()=>navigate(`/${channel.username}`/videos)}>
+                                    onClick={()=>navigate(`/${channel.username}/videos`)}
+                                    className={navButtonClass}>
                                         {channel.username} {/*TODO: ADD AVATAR BESIDE CHANNEL NAME*/}
                                     </button>
                                 ))}
-                                <button type="button" onClick={()=>setShowAllChannels((prev)=>!prev)}>
+                                <button type="button" onClick={()=>setShowAllChannels((prev)=>!prev)} className={`${navButtonClass} text-zinc-500 hover:text-zinc-300`}>
                                 {showAllChannels?"Show less":"show more"}
                                 </button>
                             </div>
                         </section>
-                        <section>
-                            <div>
+                        <section className="space-y-1">
+                            <div className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">
                                 You
                             </div>
-                            <div>
-                                <button type="button" onClick={()=>navigate("/you/history")}>
+                            <div className="space-y-0.5">
+                                <button type="button" onClick={()=>navigate("/you/history")} className={navButtonClass}>
                                     History
                                 </button>
-                                <button type="button" onClick={()=>navigate("you/liked-videos")}>
+                                <button type="button" onClick={()=>navigate("you/liked-videos")} className={navButtonClass}>
                                     Liked Videos
                                 </button>
-                                <button type="button" 
-                                onClick={()=>navigate(`/${user?.username}/videos`)}>
+                                <button type="button"
+                                onClick={()=>navigate(`/${user?.username}/videos`)} className={navButtonClass}>
                                     Your Videos
                                 </button>
                             </div>

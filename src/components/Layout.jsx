@@ -4,11 +4,11 @@ import Navbar from './Navbar.jsx'
 import Sidebar from './Sidebar.jsx'
 const Layout=()=>{
     return (
-        <div>
+        <div className="min-h-screen bg-zinc-950">
             <Navbar/>
-            <div>
+            <div className="flex">
                 <Sidebar/>
-                <main>
+                <main className="flex-1 min-w-0 p-6">
                     <Outlet/>
                 </main>
             </div>
