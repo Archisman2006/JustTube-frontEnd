@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState, useMemo } from "react";
+import React, { useEffect, useRef, useState, useMemo,useCallback, use } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ThumbsUp,Bookmark,Plus,X,EllipsisVertical } from "lucide-react";
 import apiClient from "../services/api.js";
@@ -47,7 +48,7 @@ const WatchVideo=()=>{
     const [deleteModal, setDeleteModal] = useState({ isOpen: false, commentId: null });
     const [isVideoActionsOpen, setIsVideoActionsOpen] = useState(false);
     const [deleteVideoModal, setDeleteVideoModal] = useState({ isOpen: false, isConfirmed: false });
-
+    const [commentsCount,setCommentsCount]= useState(0);
     const [isSaveMenuOpen, setIsSaveMenuOpen] = useState(false);
     const [isCreatePlaylistOpen, setIsCreatePlaylistOpen] = useState(false);
     const [playlists, setPlaylists] = useState([]);
@@ -63,6 +64,27 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
         return () => { document.body.style.overflow = "auto"; };
     }, [unAuthModalOpen, deleteModal.isOpen, deleteVideoModal.isOpen, isSaveMenuOpen, isCreatePlaylistOpen]);
     // --- VideoPlayer Options ---
+    useEffect(() => {
+        if (!videoId) return;
+        const fetchVideo = async () => {
+            try {
+                setLoading(true);
+                const response = await apiClient.post(`/videos/${videoId}`);
+                console.log("The response received is: ");
+                const videoData = response.data.data.updatedVideo;
+                setVideo(videoData);
+                setCommentsCount(response.data.data.commentsCount);
+                // Initialize likes
+                setIsVideoLiked(response.data.data.isLikedByMe || false);
+                setVideoLikesCount(response.data.data.likesCount || 0);
+            } catch (error) {
+                console.error('Could not retrieve video:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchVideo();
+    }, [videoId]);
     const videoJsOptions = useMemo(() => {
         if (!video) return {};
         const src = video.streamingUrl || video.videoFile;
@@ -74,30 +96,9 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
             sources: [{ src, type }]
         };
     }, [video]);
-    useEffect(() => {
-        if (!videoId) return;
-        const fetchVideo = async () => {
-            try {
-                setLoading(true);
-                // Standard REST for fetching a single item is usually GET
-                const response = await apiClient.get(`/videos/${videoId}`);
-                const videoData = response.data.data;
-                setVideo(videoData);
-                
-                // Initialize likes
-                setIsVideoLiked(videoData.isLikedByMe || false);
-                setVideoLikesCount(videoData.likesCount || 0);
-            } catch (error) {
-                console.error('Could not retrieve video:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchVideo();
-    }, [videoId]);
-    const handlePlayerReady = (player) => {
-        playerRef.current = player;
-    };
+    const handlePlayerReady = useCallback((player)=>{
+        playerRef.current=player;
+    },[])
     const handleLike = async () => {
         if (!user) {
             setUnAuthModalOpen(true);
@@ -105,9 +106,9 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
         }
         try {
             const response = await apiClient.post(`/likes/videos/${videoId}`);
-            const isNowLiked = response.data && Object.keys(response.data).length > 0;
+            const isNowLiked =Object.keys(response.data.data).length>0;
             setIsVideoLiked(isNowLiked);
-            setVideoLikesCount(prev => isNowLiked ? prev + 1 : prev - 1);
+            setVideoLikesCount((prev) => (isNowLiked ? prev + 1 : prev - 1));
         } catch (error) {
             console.error("Failed to toggle like on video");
         }
@@ -115,11 +116,12 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
     const handlePostComment = async () => {
         if (!commentText.trim()) return;
         try {
-            await apiClient.post(`/comments/${videoId}`, { content: commentText });
+            await apiClient.post(`/comments/videos/${videoId}`, { content: commentText });
             setCommentText("");
             setIsCommentFocused(false);
             // Incrementing this key forces the <VideoComments> component below to re-mount and fetch the latest comments
             setCommentsRefreshKey(prev => prev + 1); 
+            setCommentsCount(prev=>prev+1);
         } catch (error) {
             console.error("Failed to post comment");
         }
@@ -129,6 +131,7 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
         setTimeout(() => setToast({ visible: false, message: '', type: 'success' }), 3000);
     };
     const handleSaveButtonClick = async () => {
+        console.log(user);
         if (!user) {
             setUnAuthModalOpen(true);
             return;
@@ -137,7 +140,9 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
         setLoadingPlaylists(true);
         try {
             const response = await apiClient.get('/playlists', { params: { userId: user._id } });
-            setPlaylists(response.data.data || []); 
+            console.log(response);
+            console.log(isSaveMenuOpen);
+            setPlaylists(response.data.data.docs || []); 
         } catch (error) {
             console.error("Failed to fetch playlists");
         } finally {
@@ -203,6 +208,7 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
         ? description 
         : `${description.slice(0, 50)}...`;
     const isVideoOwner = Boolean(user  && video.owner._id=== user._id);
+    const modalRoot = typeof document !== "undefined" ? document.body : null;
     return (
         <div className="min-h-screen bg-[#0f0f0f] text-white p-4">
             {/* Main Layout: Flex for Left Content, Sidebar for Right */}
@@ -238,7 +244,12 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                         </div>
                         <div>
                             <button 
-                                onClick={handleSaveButtonClick}  className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-full transition ml-3">
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleSaveButtonClick();
+                                }}
+                                className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-full transition ml-3">
                                 <Bookmark size={20} className="text-gray-300" />
                                 <span>Save</span>
                             </button>
@@ -305,12 +316,12 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                     {/* 5. Add Comment Section */}
                     <div className="mb-8">
                         <h2 className="text-xl font-bold mb-4">
-                            {video.commentsCount || 0} Comments
+                            {commentsCount || 0} Comments
                         </h2>
                         
                         <div className="flex gap-4">
                             <img 
-                                src={user?.avatar || "https://via.placeholder.com/48"} 
+                                src={user?.avatar || "/src/assets/user.png"} 
                                 alt="Your avatar" 
                                 className="w-10 h-10 rounded-full object-cover"
                             />
@@ -321,7 +332,8 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                                     onChange={(e) => setCommentText(e.target.value)}
                                     onFocus={() => setIsCommentFocused(true)}
                                     placeholder="Add a comment..."
-                                    className="w-full bg-transparent border-b border-gray-600 focus:border-white focus:outline-none py-1 transition-colors"
+                                    className="w-full bg-transparent text-white border-b border-gray-600 focus:border-white focus:outline-none py-1 transition-colors"
+                                    style={{ color: "white" }}
                                 />
                                 {isCommentFocused && (
                                     <div className="flex justify-end gap-2 mt-3">
@@ -453,48 +465,49 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
         </div>
     )}
     {/* Save to Playlist Modal */}
-    {isSaveMenuOpen && (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
-        onClick={(e) => handleBackdropClick(e, () => setIsSaveMenuOpen(false))}>
-        <div className="bg-zinc-900 border border-zinc-700 p-6 rounded-xl max-w-sm w-full shadow-2xl mx-4 flex flex-col max-h-[70vh]">
-            <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold">Save to playlist</h3>
-                <button onClick={() => setIsSaveMenuOpen(false)}>
-                    <X size={20} className="text-gray-400 hover:text-white" />
+    {isSaveMenuOpen && modalRoot && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80"
+            onClick={(e) => handleBackdropClick(e, () => setIsSaveMenuOpen(false))}>
+            <div className="bg-zinc-900 border border-zinc-700 p-6 rounded-xl max-w-sm w-full shadow-2xl mx-4 flex flex-col max-h-[70vh]">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-bold">Save to playlist</h3>
+                    <button type="button" onClick={() => setIsSaveMenuOpen(false)}>
+                        <X size={20} className="text-gray-400 hover:text-white" />
+                    </button>
+                </div>
+                
+                {/* Scrollable list of playlists */}
+                <div className="overflow-y-auto flex-1 mb-4 pr-2">
+                    {loadingPlaylists ? (
+                        <p className="text-gray-400">Loading playlists...</p>
+                    ) : playlists.length > 0 ? (
+                        <div className="flex flex-col gap-2">
+                            {playlists.map(pl => (
+                                <div onClick={() => handleAddToPlaylist(pl._id)} key={pl._id}>
+                                    <PlaylistCard playlist={pl} disableNavigation={true}/>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-gray-400">No playlists found.</p>
+                    )}
+                </div>
+                <button 
+                    onClick={() => {
+                        setIsSaveMenuOpen(false);
+                        setIsCreatePlaylistOpen(true);
+                    }}
+                    className="flex items-center justify-center gap-2 px-4 py-3 font-semibold hover:bg-zinc-800 rounded border border-zinc-700 mt-2"
+                >
+                    <Plus size={18} /> Create new playlist
                 </button>
             </div>
-            
-            {/* Scrollable list of playlists */}
-            <div className="overflow-y-auto flex-1 mb-4 pr-2">
-                {loadingPlaylists ? (
-                    <p className="text-gray-400">Loading playlists...</p>
-                ) : playlists.length > 0 ? (
-                    <div className="flex flex-col gap-2">
-                        {playlists.map(pl => (
-                            <div onClick={handleAddToPlaylist} key={pl._id}>
-                                <PlaylistCard playlist={pl}/>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <p className="text-gray-400">No playlists found.</p>
-                )}
-            </div>
-            <button 
-                onClick={() => {
-                    setIsSaveMenuOpen(false);
-                    setIsCreatePlaylistOpen(true);
-                }}
-                className="flex items-center justify-center gap-2 px-4 py-3 font-semibold hover:bg-zinc-800 rounded border border-zinc-700 mt-2"
-            >
-                <Plus size={18} /> Create new playlist
-            </button>
-        </div>
-    </div>
+        </div>,
+        modalRoot
     )}
     {/* Create New Playlist Modal */}
-    {isCreatePlaylistOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+    {isCreatePlaylistOpen && modalRoot && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80"
             onClick={(e) => handleBackdropClick(e, () => setIsCreatePlaylistOpen(false))}
         >
             <div className="bg-zinc-900 border border-zinc-700 p-6 rounded-xl max-w-sm w-full shadow-2xl mx-4">
@@ -510,7 +523,8 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                             type="text" 
                             value={newPlaylist.name}
                             onChange={(e) => setNewPlaylist({...newPlaylist, name: e.target.value})}
-                            className="w-full bg-transparent border-b border-gray-600 focus:border-white focus:outline-none py-1 transition-colors"
+                            className="w-full bg-transparent text-white border-b border-gray-600 focus:border-white focus:outline-none py-1 transition-colors"
+                            style={{ color: "white" }}
                         />
                     </div>
                     <div>
@@ -519,7 +533,8 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                             type="text" 
                             value={newPlaylist.description}
                             onChange={(e) => setNewPlaylist({...newPlaylist, description: e.target.value})}
-                            className="w-full bg-transparent border-b border-gray-600 focus:border-white focus:outline-none py-1 transition-colors"
+                            className="w-full bg-transparent text-white border-b border-gray-600 focus:border-white focus:outline-none py-1 transition-colors"
+                            style={{ color: "white" }}
                         />
                     </div>
                     <div>
@@ -551,7 +566,8 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                     </button>
                 </div>
             </div>
-        </div>
+        </div>,
+        modalRoot
     )}
     {toast.visible && (
         <div className={`fixed bottom-5 left-5 z-50 px-6 py-3 rounded shadow-lg transition-opacity ${toast.type === 'error' ? 'bg-red-600' : 'bg-green-600'} text-white font-medium`}>

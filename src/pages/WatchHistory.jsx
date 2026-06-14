@@ -31,9 +31,8 @@ const WatchHistory = () => {
             const response = await apiClient.get("/users/history", {
                 params: { page: pageNumber, limit: 12 }
             });
-            const newVideos = response.data.data.videos || [];
+            const newVideos = response.data.data.videos.watchHistory;
             const nextPageHasMore = response.data.data.hasNextPage;
-
             if (pageNumber === 1) {
                 setVideos(newVideos);
             } else {

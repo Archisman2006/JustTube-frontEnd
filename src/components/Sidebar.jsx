@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 const Sidebar=()=>{
     const navigate=useNavigate();
     const {user}=useAuth();
-    const [isCollapsed,setIsCollapsed]=useState(false)
+    const [isCollapsed,setIsCollapsed]=useState(true)
     const [showAllChannels,setShowAllChannels]=useState(false);
     const [subscribedChannels,setSubscribedChannels]=useState([]);
     const [loadingChannels,setLoadingChannels]=useState(true);
@@ -88,7 +88,7 @@ const Sidebar=()=>{
                                     Liked Videos
                                 </button>
                                 <button type="button" 
-                                onClick={()=>navigate(`/@${user?.username}/videos`)}>
+                                onClick={()=>navigate(`/${user?.username}/videos`)}>
                                     Your Videos
                                 </button>
                             </div>

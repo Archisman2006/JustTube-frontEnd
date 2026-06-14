@@ -1,5 +1,5 @@
 import React,{useRef,useEffect,useState} from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate,useSearchParams } from "react-router-dom";
 import CommentCard from './CommentCard.jsx'
 import apiClient from '../services/api.js'
 const VideoComments=({onDeleteRequest,onUnAuthAction})=>{
@@ -17,13 +17,13 @@ const VideoComments=({onDeleteRequest,onUnAuthAction})=>{
         try{
             setLoading(true);
             setError("");
-            const response=await apiClient.get(`/comments/${videoId}`,{
+            const response=await apiClient.get(`/comments/videos/${videoId}`,{
                 params:{
                     page:pageNumber,limit:12
                 }
             });
-            const newComments=response.data.data;
-            const nextPageHasMore=response.data.hasMore;
+            const newComments=response.data.data.docs;
+            const nextPageHasMore=response.data.hasNextPage;
             setComments((prev)=>(pageNumber===1)?newComments:[...prev,...newComments])
             setHasMore(Boolean(nextPageHasMore));
         }

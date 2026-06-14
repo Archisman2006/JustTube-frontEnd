@@ -9,7 +9,6 @@ const ChannelCard=({channel})=>{
     const [isSubscribed,setIsSubscribed]=useState(false);
     const [loading,setLoading]=useState(false);
     if(!channel) return null;
-    
     const fetchSubscriptionStatus=async ()=>{
         if(!user?._id || !channel._id){
             setIsSubscribed(false);
@@ -17,7 +16,6 @@ const ChannelCard=({channel})=>{
         }
         try {
             const response=await apiClient.get(`/users/channel/${channel?.username}`);
-            console.log(response);
             setIsSubscribed(Boolean(response.data.data.isSubscribed));
         } catch (error) {
             setIsSubscribed(false);
@@ -67,7 +65,7 @@ const ChannelCard=({channel})=>{
                 </div>
                 <div>
                     <h3>{channel.fullName}</h3>
-                    <p>@{channel.userName}</p>
+                    <p>@{channel.username}</p>
                 </div>
                 <div>
                     <button onClick={handleSubscribeClick} disabled={loading}>

@@ -22,8 +22,8 @@ const RecommendedVideos=()=>{
                 }
             });
             const responseData=response.data.data;
-            const newVideos=responseData.videos;
-            const nextPageHasMore=responseData.hasMore;
+            const newVideos=responseData.docs;
+            const nextPageHasMore=responseData.hasNextPage;
             setVideos((prev)=>(pageNumber===1)?newVideos:[...prev,...newVideos])
             setHasMore(Boolean(nextPageHasMore));
         }

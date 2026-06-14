@@ -28,10 +28,10 @@ const FeedChannels = () => {
             const responseData = response.data.data;
             const newChannels = responseData.docs;
             const nextPageHasMore =responseData.hasNextPage; 
-            setVideos((prev) => (pageNumber === 1 ? newChannels : [...prev, ...newChannels]));
+            setChannels((prev) => (pageNumber === 1 ? newChannels : [...prev, ...newChannels]));
             setHasMore(Boolean(nextPageHasMore) && newChannels.length > 0);
         } catch (err) {
-            setError("Failed to load feed videos");
+            setError("Failed to load feed channels");
             setHasMore(false);
         } finally {
             setLoading(false);

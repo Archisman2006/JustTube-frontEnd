@@ -27,7 +27,7 @@ export const AuthProvider=({children})=>{
         setUser(userData); setLoading(false);
     }
     const logout=()=>{
-        setUser(userData); setLoading(false);
+        setUser(null); setLoading(false);
     }
     return (
         <AuthContext.Provider value={{user,loading,login,logout,refreshAuth:fetchCurrentUser}}>{children}</AuthContext.Provider>

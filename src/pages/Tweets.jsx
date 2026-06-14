@@ -23,7 +23,6 @@ const Tweets=()=>{
                 }
             });
             const responseData=response.data.data;
-            console.log(responseData);
             const newTweets=responseData.docs;
             const nextPageHasMore=responseData.hasNextPage;
             setTweets((prev)=>(pageNumber===1)?newTweets:[...prev,...newTweets])

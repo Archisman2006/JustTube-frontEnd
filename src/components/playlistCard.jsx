@@ -22,7 +22,7 @@ const formatRelativeTime = (dateValue) => {
     return pluralize(years, "year");
 };
 
-const PlaylistCard = ({ playlist }) => {
+const PlaylistCard = ({ playlist, disableNavigation = false }) => {
     const navigate = useNavigate();
     if (!playlist) return null;
     const playlistId = playlist._id;
@@ -37,7 +37,8 @@ const PlaylistCard = ({ playlist }) => {
     "https://via.placeholder.com/320x180?text=No+Video";
 
     const openPlaylist = () => {
-    navigate(`/playlist/${playlistId}`);
+        if (disableNavigation) return;
+        navigate(`/playlist/${playlistId}`);
     };
 
     const openChannel = (e) => {

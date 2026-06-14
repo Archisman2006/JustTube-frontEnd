@@ -71,10 +71,10 @@ const ViewTweet = () => {
             try {
                 setLoading(true);
                 const response = await apiClient.get(`/tweets/${tweetId}`);
-                const tweetData = response.data.data;
+                const tweetData = response.data.data.tweet;
                 setTweet(tweetData);
-                setIsTweetLiked(tweetData.isLikedByMe || false);
-                setTweetLikesCount(tweetData.likesCount || 0);
+                setIsTweetLiked(response.data.data.isLikedByMe || false);
+                setTweetLikesCount(response.data.data.likesCount || 0);
             } catch (error) {
                 console.error("Could not retrieve tweet:", error);
                 setTweet(null);
@@ -310,7 +310,8 @@ const ViewTweet = () => {
                                     onChange={(e) => setCommentText(e.target.value)}
                                     onFocus={handleCommentFocus}
                                     placeholder="Add a comment..."
-                                    className="w-full bg-transparent border-b border-gray-600 focus:border-white focus:outline-none py-1 transition-colors"
+                                    className="w-full bg-transparent text-white border-b border-gray-600 focus:border-white focus:outline-none py-1 transition-colors"
+                                    style={{ color: "white" }}
                                 />
                                 {isCommentFocused && (
                                     <div className="flex justify-end gap-2 mt-3">

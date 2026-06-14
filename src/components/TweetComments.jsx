@@ -16,13 +16,13 @@ const TweetComments=({onDeleteRequest,onUnAuthAction})=>{
         try{
             setLoading(true);
             setError("");
-            const response=await apiClient.get(`/comments/${tweetId}`,{
+            const response=await apiClient.get(`/comments/tweets/${tweetId}`,{
                 params:{
                     page:pageNumber,limit:12
                 }
             });
-            const newComments=response.data.data;
-            const nextPageHasMore=response.data.hasMore;
+            const newComments=response.data.data.docs;
+            const nextPageHasMore=response.data.data.hasNextPage;
             setComments((prev)=>(pageNumber===1)?newComments:[...prev,...newComments])
             setHasMore(Boolean(nextPageHasMore));
         }

@@ -80,11 +80,14 @@ const ChannelTweets=()=>{
                 {initialLoading?(
                     <p>Loading tweets...</p>
                 ):(
-                    <div>
-                        {tweets.map((tweet)=>(
-                            <TweetCard key={tweet._id} tweet={tweet}/>
-                        ))}
-                    </div>
+                    <>
+                        {tweets.length==0 && <p>No Tweets Posted</p>}
+                        <div>
+                            {tweets.map((tweet)=>(
+                                <TweetCard key={tweet._id} tweet={tweet}/>
+                            ))}
+                        </div>
+                    </>
                 )}
             </section>
             {loading && !initialLoading?<p>Loading more tweets</p>:null}

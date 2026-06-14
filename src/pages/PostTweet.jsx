@@ -6,7 +6,6 @@ const PostTweet=()=>{
     const navigate=useNavigate();
     const [formData,setFormData]=useState({
         content:'',
-        image:'',
     });
     const [files,setFiles]=useState({
         image:null
@@ -33,10 +32,11 @@ const PostTweet=()=>{
         const payload=new FormData();
         payload.append('content',formData.content);
         if(files.image)
-            payload.append('image',formData.image);
+            payload.append('image',files.image);
         try {
+            setLoading(true);
             const response=await apiClient.post('/tweets',payload);
-            navigate(`videos/view?q=${response.data.data.tweet._id}`);
+            navigate(`/view?q=${response.data.data._id}`);
         } catch (err) {
             setError(err?.response?.data?.message || 
                 'Network error. Please check your connection and try again.');
@@ -90,7 +90,7 @@ const PostTweet=()=>{
                         type="submit"
                         disabled={!isFormValid || loading}
                         className={`w-full py-3 mt-4 rounded font-bold uppercase tracking-wider transition-all duration-200 ${
-                            isFormValid && !isLoading
+                            isFormValid && !loading
                                 ? 'bg-red-600 text-white hover:bg-red-500 hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] cursor-pointer'
                                 : 'bg-black text-gray-500 border border-red-900 cursor-not-allowed opacity-70'
                         }`}

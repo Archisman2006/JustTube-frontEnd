@@ -39,13 +39,15 @@ const PostVideo=()=>{
         payload.append('title',formData.title);
         payload.append('description',formData.description);
         payload.append('isPublished',formData.isPublished);
-        payload.append('videoFile',formData.videoFile);
+        payload.append('videoFile',files.videoFile);
         if(files.thumbnail)
             payload.append('thumbnail',files.thumbnail);
         try {
+            setLoading(true);
             const response=await apiClient.post('/videos',payload);
-            navigate(`videos/watch?q=${response.data.data.video._id}`);
+            navigate(`/watch?q=${response.data.data._id}`);
         } catch (err) {
+            console.log(err);
             setError(err?.response?.data?.message || 
                 'Network error. Please check your connection and try again.');
         }
@@ -67,7 +69,7 @@ const PostVideo=()=>{
                 {/* Error Message Display */}
                 {error && (
                     <div className="bg-red-950 border border-red-500 text-red-200 px-4 py-3 rounded mb-6 text-sm font-medium">
-                        {error}
+                        {error}1
                     </div>
                 )}
 
@@ -133,7 +135,7 @@ const PostVideo=()=>{
                         type="submit"
                         disabled={!isFormValid || loading}
                         className={`w-full py-3 mt-4 rounded font-bold uppercase tracking-wider transition-all duration-200 ${
-                            isFormValid && !isLoading
+                            isFormValid && !loading
                                 ? 'bg-red-600 text-white hover:bg-red-500 hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] cursor-pointer'
                                 : 'bg-black text-gray-500 border border-red-900 cursor-not-allowed opacity-70'
                         }`}

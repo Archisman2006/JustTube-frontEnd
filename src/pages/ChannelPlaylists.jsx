@@ -80,11 +80,14 @@ const ChannelPlaylists=()=>{
                 {initialLoading?(
                     <p>Loading playlists...</p>
                 ):(
-                    <div>
-                        {playlists.map((playlist)=>(
-                            <PlaylistCard key={playlist._id} playlist={playlist}/>
-                        ))}
-                    </div>
+                    <>
+                        {playlists.length===0 && <p>No Playlists created.</p>}
+                        <div>
+                            {playlists.map((playlist)=>(
+                                <PlaylistCard key={playlist._id} playlist={playlist}/>
+                            ))}
+                        </div>
+                    </>
                 )}
             </section>
             {loading && !initialLoading?<p>Loading more playlists</p>:null}

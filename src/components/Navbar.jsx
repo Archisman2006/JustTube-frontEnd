@@ -1,13 +1,16 @@
-import React,{useState} from "react";
+import React,{useEffect, useState} from "react";
 import {useAuth} from '../context/AuthContext'
 import { Search,EllipsisVertical, Plus } from "lucide-react";
 import { useNavigate,Link } from "react-router-dom";
+import apiClient from "../services/api";
 const Navbar=()=>{
-    const {user,loading}=useAuth();
+    const {user,loading,logout}=useAuth();
     const navigate=useNavigate();
     const [query,setQuery]=useState("");
     const [isMoreOpen,setIsMoreOpen]=useState(false);
     const [isCreateOpen,setIsCreateOpen]=useState(false);
+    const [isLoading,setIsLoading]=useState(false);
+    const [error,setError]=useState(null);
     const avatarSrc=user?.avatar || "";
     const displayName=user?.username || "User";
     const handleSearch=(e)=>{
@@ -24,6 +27,22 @@ const Navbar=()=>{
     const handleProfileClick=()=>{
         navigate(`/${user?.username}/videos`)
     }
+    const handleSignOut=async ()=>{
+        if(!user) return;
+        try {
+            const response=await apiClient.post('users/logout');
+            logout();
+        } catch (error) {
+            console.log(error);
+            setError(error.response?.data?.message || "error occured while logging out")
+        }
+        finally{
+            setIsLoading(false);
+        }
+    }
+    useEffect(()=>{
+        if(!user) navigate('/');
+    },[user])
     return (
         <header>
             {user?.username}
@@ -41,6 +60,7 @@ const Navbar=()=>{
                     </button>
                 </div>
             </form>
+            { user &&
             <div>
                 <button type="button" 
                 onClick={()=>setIsMoreOpen((v)=>!v)}
@@ -49,11 +69,11 @@ const Navbar=()=>{
                 </button>
                 {isMoreOpen && (
                     <div>
-                        <button>item 1</button>
-                        <button>item 2</button>
+                        <button type="button" onClick={handleSignOut}>Sign Out</button>
                     </div>
                 )}
             </div>
+            }       
             {!loading && user ?(
                 <>
                     <div>
@@ -64,10 +84,10 @@ const Navbar=()=>{
                         </button>
                         {isCreateOpen && (
                             <div>
-                                <button onClick={handleCreateNavigate("video")}>
+                                <button onClick={()=>handleCreateNavigate("video")}>
                                 Post Video
                                 </button>
-                                <button onClick={handleCreateNavigate("tweet")}>
+                                <button onClick={()=>handleCreateNavigate("tweet")}>
                                 Post Tweet
                                 </button>
                             </div>

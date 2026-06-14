@@ -80,11 +80,14 @@ const ChannelVideos=()=>{
                 {initialLoading?(
                     <p>Loading Videos...</p>
                 ):(
-                    <div>
-                        {videos.map((video)=>(
-                            <VideoCard key={video._id} video={video}/>
-                        ))}
-                    </div>
+                    <>  
+                        {videos.length==0 && <p>No Videos Posted</p>}
+                        <div>
+                            {videos.map((video)=>(
+                                <VideoCard key={video._id} video={video}/>
+                            ))}
+                        </div>
+                    </>
                 )}
             </section>
             {loading && !initialLoading?<p>Loading more videos</p>:null}

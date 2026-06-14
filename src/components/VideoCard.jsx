@@ -24,7 +24,7 @@ const VideoCard=({video})=>{
     const owner = video.owner;
     const ownerId = owner._id;
     const title = video.title;
-    const username=owner.userName;
+    const username=owner.username;
     const fullname = owner.fullName
     const avatar = owner.avatar
     const thumbnail = video.thumbnail;
@@ -32,10 +32,10 @@ const VideoCard=({video})=>{
     const timeAgo = formatRelativeTime(video.createdAt);
         const openChannel=(e)=>{
             e.stopPropagation();
-            navigate(`/channel/${ownerId}`);
+            navigate(`/${username}/videos`);
         }
     return (
-        <article onClick={()=>navigate(`/videos/:${video._id}`)}>
+        <article onClick={()=>navigate(`/watch?q=${video._id}`)}>
             <div>
                 <img src={thumbnail} alt={title}/>
             </div>

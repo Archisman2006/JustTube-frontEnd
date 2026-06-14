@@ -29,7 +29,6 @@ const SignIn = () => {
                 identifier: formData.identifier,
                 password: formData.password,
             });
-            console.log(response);
             login(response.data.data.user);
             navigate('/');
         } catch (err) {

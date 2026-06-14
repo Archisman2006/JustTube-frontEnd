@@ -92,7 +92,7 @@ const LikedVideos=()=>{
     if (error) return <div className="text-red-500 text-center mt-20">{error || "videos not found."}</div>;
     const thumbnail = videos.length > 0 && videos?.[0]?.video?.thumbnail 
         ? videos[0].video.thumbnail 
-        : "https://via.placeholder.com/640x360?text=Empty+Playlist";
+        : "/src/assets/images.png";
     return (
         <div className="min-h-[calc(100vh-64px)] bg-[#0f0f0f] text-white flex flex-col lg:flex-row overflow-hidden">
             {/* LEFT COLUMN - Fixed Content */}
@@ -113,16 +113,16 @@ const LikedVideos=()=>{
                     {/* Owner details */}
                     <div 
                         className="flex items-center gap-3 cursor-pointer group mb-4"
-                        onClick={() => navigate(`/@${user.userName}/videos`)}
+                        onClick={() => navigate(`/${user.userName}/videos`)}
                     >
                         <img 
-                            src={user?.avatar || "https://via.placeholder.com/48"} 
+                            src={user?.avatar || "/src/assets/images.png"} 
                             alt={user?.userName} 
                             className="w-12 h-12 rounded-full object-cover border border-transparent group-hover:border-red-500 transition-colors"
                         />
                         <div>
                             <p className="font-semibold text-lg group-hover:text-red-400 transition-colors">
-                                {user?.fullName || user?.userName}
+                                {user?.fullName}
                             </p>
                         </div>
                     </div>

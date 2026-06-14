@@ -24,7 +24,6 @@ const TweetCard=({tweet})=>{
     if(!tweet) return null;
     const owner=tweet.owner;
     const tweetId=tweet._id;
-    console.log(tweet);
     const channelId=tweet.owner._id;
     const fullname=owner.fullname;
     const username=owner.username;
@@ -35,11 +34,11 @@ const TweetCard=({tweet})=>{
     const isLongContent=content.length>250;
     const displayedContent=showFullContent || !isLongContent?content:content.slice(0,250); 
     const openTweet=()=>{
-        navigate("/tweet/"+tweetId);
+        navigate(`/view?q=${tweetId}`);
     }
     const openChannel=(e)=>{
         e.stopPropagation();
-        navigate("/channel"+channelId);
+        navigate(`/${username}/videos`);
     }
     const toggleContent=(e)=>{
         e.stopPropagation();
