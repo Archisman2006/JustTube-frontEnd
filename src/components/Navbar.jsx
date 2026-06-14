@@ -2,7 +2,7 @@ import React,{useEffect, useState} from "react";
 import {useAuth} from '../context/AuthContext'
 import { Search,EllipsisVertical, Plus } from "lucide-react";
 import { useNavigate,Link } from "react-router-dom";
-import apiClient from "../services/api";
+import apiClient from "../services/api.js";
 const Navbar=()=>{
     const {user,loading,logout}=useAuth();
     const navigate=useNavigate();
