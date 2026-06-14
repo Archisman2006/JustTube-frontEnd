@@ -82,9 +82,9 @@ const ChannelTweets=()=>{
                 ):(
                     <>
                         {tweets.length==0 && <p>No Tweets Posted</p>}
-                        <div>
+                        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                             {tweets.map((tweet)=>(
-                                <TweetCard key={tweet._id} tweet={tweet}/>
+                                <TweetCard key={tweet._id} tweet={tweet} width="100%" height="auto"/>
                             ))}
                         </div>
                     </>

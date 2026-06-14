@@ -131,13 +131,26 @@ const Navbar=()=>{
                                 onClick={handleProfileClick}
                                 aria-label="open profile"
                                 title={displayName}
-                                className="hover:bg-zinc-800 rounded-full p-1 text-zinc-300 hover:text-white transition"
+                                className="flex items-center justify-center h-5 w-5 rounded-full bg-zinc-800 text-zinc-300 hover:text-white ring-2 ring-zinc-700 hover:ring-rose-500 overflow-hidden transition-all duration-200 shrink-0"
                             >
-                                <img
-                                    src={avatarSrc}
-                                    alt={displayName}
-                                    className="h-8 w-8 rounded-full object-cover ring-2 ring-zinc-700"
-                                />
+                                {avatarSrc ? (
+                                    <img
+                                        src={avatarSrc}
+                                        alt={displayName}
+                                        className="h-full w-full object-cover"
+                                        onError={(e) => {
+                                            // Handle broken URL images by hiding the image and falling back
+                                            e.target.style.display = 'none';
+                                            e.target.nextSibling.style.display = 'flex';
+                                        }}
+                                    />
+                                ) : null}
+                                <span 
+                                    className="text-xs font-bold uppercase select-none"
+                                    style={{ display: avatarSrc ? 'none' : 'flex' }}
+                                >
+                                    {displayName.charAt(0)}
+                                </span>
                             </button>
                         </>
                     ):(

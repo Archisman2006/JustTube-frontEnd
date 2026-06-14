@@ -70,9 +70,9 @@ const RecommendedVideos=()=>{
                 {initialLoading?(
                     <p>Loading Videos...</p>
                 ):(
-                    <div>
+                    <div className="flex flex-col gap-3">
                         {videos.map((video)=>(
-                            <VideoCard key={video._id} video={video}/>
+                            <VideoCard key={video._id} video={video} width="100%" height="auto"/>
                         ))}
                     </div>
                 )}

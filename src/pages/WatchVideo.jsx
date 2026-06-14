@@ -227,7 +227,7 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                     {/* 3. Channel Card & Like Button Row */}
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                         <div className="w-full sm:w-auto">
-                            <ChannelCard channel={video.owner} />
+                            <ChannelCard channel={video.owner} width="100%" height="auto" />
                         </div>
                         <div className="flex items-center">
                             <button 
@@ -484,7 +484,7 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                         <div className="flex flex-col gap-2">
                             {playlists.map(pl => (
                                 <div onClick={() => handleAddToPlaylist(pl._id)} key={pl._id}>
-                                    <PlaylistCard playlist={pl} disableNavigation={true}/>
+                                    <PlaylistCard playlist={pl} disableNavigation={true} width="100%" height="auto"/>
                                 </div>
                             ))}
                         </div>

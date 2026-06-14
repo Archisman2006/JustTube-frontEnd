@@ -144,7 +144,7 @@ const LikedVideos=()=>{
                         {videos.map((video, index) => (
                             <div key={`${video._id}-${index}`} className="flex items-start gap-4 p-2 rounded-xl hover:bg-zinc-900/50 transition-colors group">
                                 <div className="flex-1 min-w-0">
-                                    <VideoCard video={video?.video} />
+                                    <VideoCard video={video?.video} width="100%" height="auto" />
                                 </div>
                                 {/* Ellipsis Menu Button */}
                                 <div className="relative mt-2 shrink-0">

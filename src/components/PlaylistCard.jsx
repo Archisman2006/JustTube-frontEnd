@@ -22,7 +22,7 @@ const formatRelativeTime = (dateValue) => {
     return pluralize(years, "year");
 };
 
-const PlaylistCard = ({ playlist, disableNavigation = false }) => {
+const PlaylistCard = ({ playlist, disableNavigation = false, width = "100%", height = "auto" }) => {
     const navigate = useNavigate();
     if (!playlist) return null;
     const playlistId = playlist._id;
@@ -47,16 +47,37 @@ const PlaylistCard = ({ playlist, disableNavigation = false }) => {
     };
 
     return (
-    <article onClick={openPlaylist} role="button" tabIndex={0}>
-        <div>
-            <img src={thumbnail} alt={playlist.name} />
+    <article
+        style={{ width, height }}
+        onClick={openPlaylist}
+        role="button"
+        tabIndex={0}
+        className="group cursor-pointer overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/40 transition hover:border-zinc-700 hover:bg-zinc-900/70"
+    >
+        <div className="relative aspect-video w-full overflow-hidden bg-zinc-800">
+            <img
+                src={thumbnail}
+                alt={playlist.name}
+                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <span className="absolute bottom-2 right-2 rounded bg-black/70 px-2 py-0.5 text-xs font-medium text-white">
+                Playlist
+            </span>
         </div>
-        <div>
-            <h3>{playlist.name}</h3>
-            <div>
-                <button type="button" onClick={openChannel}>
+        <div className="p-3">
+            <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-white group-hover:text-zinc-100">
+                {playlist.name}
+            </h3>
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500">
+                <button
+                    type="button"
+                    onClick={openChannel}
+                    className="truncate text-zinc-400 transition hover:text-white"
+                >
                     {ownerName}
                 </button>
+                <span>·</span>
                 <span>{updatedAt}</span>
             </div>
         </div>

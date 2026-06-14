@@ -4,7 +4,7 @@ const pluralize=(value,unit)=>`${value}${unit}${value==1?"":"s"} ago`;
 const formatRelativeTime=(createdAt)=>{
     const createdDate=new Date(createdAt);
     if(Number.isNaN(createdDate.getTime())) return "";
-    const diffMs=math.max(0,Date.now()-createdDate.getTime());
+    const diffMs=Math.max(0,Date.now()-createdDate.getTime());
     const seconds=Math.floor(diffMs/1000);
     if(seconds<60) return pluralize(seconds,"second");
     const minutes=Math.floor(seconds/60);
@@ -18,7 +18,7 @@ const formatRelativeTime=(createdAt)=>{
     const years=Math.floor(months/12);
     return pluralize(years,"year");
 }
-const TweetCard=({tweet})=>{
+const TweetCard=({tweet,width="100%",height="auto"})=>{
     const navigate=useNavigate();
     const [showFullContent,setShowFullContent]=useState(false);
     if(!tweet) return null;
@@ -45,23 +45,53 @@ const TweetCard=({tweet})=>{
         setShowFullContent(true);
     }
     return (
-        <article onClick={openTweet}>
-            <div>
-                <button type="button" onClick={openChannel}>
-                    <img src={avatar} alt={fullname}/>
+        <article
+            style={{ width, height }}
+            onClick={openTweet}
+            className="cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 transition hover:border-zinc-700 hover:bg-zinc-900/70"
+        >
+            <div className="flex items-start gap-3">
+                <button
+                    type="button"
+                    onClick={openChannel}
+                    className="shrink-0 rounded-full transition hover:ring-2 hover:ring-zinc-600"
+                >
+                    <img
+                        src={avatar}
+                        alt={fullname}
+                        className="h-10 w-10 rounded-full object-cover ring-2 ring-zinc-700"
+                    />
                 </button>
-            <button type="button" onClick={openChannel}>
-                {fullname}
-            </button>
-            <button type="button" onClick={openChannel}>
-                @{username}
-            </button>
-            <span>{createdAgo}</span>
+                <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <button
+                            type="button"
+                            onClick={openChannel}
+                            className="text-sm font-semibold text-white transition hover:text-zinc-200"
+                        >
+                            {fullname}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={openChannel}
+                            className="text-sm text-zinc-500 transition hover:text-zinc-300"
+                        >
+                            @{username}
+                        </button>
+                        <span className="text-xs text-zinc-600">· {createdAgo}</span>
+                    </div>
+                    <div className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-zinc-300">
+                        {displayedContent}
+                    </div>
+                </div>
             </div>
-            <div>{displayedContent}</div>
             {image?(
-                <div>
-                    <img src={image} alt="tweet attachment"/>
+                <div className="mt-3 overflow-hidden rounded-lg border border-zinc-800">
+                    <img
+                        src={image}
+                        alt="tweet attachment"
+                        className="max-h-80 w-full object-cover"
+                    />
                 </div>
             ):null}
         </article>

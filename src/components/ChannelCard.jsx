@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {useAuth} from '../context/AuthContext.jsx'
 import apiClient from "../services/api.js";
 
-const ChannelCard=({channel})=>{
+const ChannelCard=({channel,width="100%",height="auto"})=>{
     const navigate=useNavigate();
     const {user}=useAuth();
     const [isSubscribed,setIsSubscribed]=useState(false);
@@ -58,17 +58,35 @@ const ChannelCard=({channel})=>{
         }
     }
     return (
-        <article onClick={openChannel}>
-            <div>
-                <div>
-                    <img src={channel.avatar} alt={channel.fullName}/>
+        <article
+            style={{ width, height }}
+            onClick={openChannel}
+            className="cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 transition hover:border-zinc-700 hover:bg-zinc-900/70"
+        >
+            <div className="flex items-center gap-4">
+                <div className="shrink-0">
+                    <img
+                        src={channel.avatar}
+                        alt={channel.fullName}
+                        className="h-14 w-14 rounded-full object-cover ring-2 ring-zinc-700"
+                    />
                 </div>
-                <div>
-                    <h3>{channel.fullName}</h3>
-                    <p>@{channel.username}</p>
+                <div className="min-w-0 flex-1">
+                    <h3 className="truncate text-sm font-semibold text-white">
+                        {channel.fullName}
+                    </h3>
+                    <p className="truncate text-xs text-zinc-500">@{channel.username}</p>
                 </div>
-                <div>
-                    <button onClick={handleSubscribeClick} disabled={loading}>
+                <div className="shrink-0">
+                    <button
+                        onClick={handleSubscribeClick}
+                        disabled={loading}
+                        className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${
+                            isSubscribed
+                                ? "border border-zinc-600 bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                                : "bg-white text-zinc-950 hover:bg-zinc-200"
+                        } disabled:cursor-not-allowed disabled:opacity-60`}
+                    >
                         {isSubscribed?"Unsubscribe":"subscribe"}
                     </button>
                 </div>

@@ -82,9 +82,9 @@ const ChannelPlaylists=()=>{
                 ):(
                     <>
                         {playlists.length===0 && <p>No Playlists created.</p>}
-                        <div>
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                             {playlists.map((playlist)=>(
-                                <PlaylistCard key={playlist._id} playlist={playlist}/>
+                                <PlaylistCard key={playlist._id} playlist={playlist} width="100%" height="auto"/>
                             ))}
                         </div>
                     </>

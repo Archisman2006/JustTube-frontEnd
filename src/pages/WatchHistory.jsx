@@ -150,7 +150,7 @@ const WatchHistory = () => {
                         {videos.map((video) => (
                             <div key={video._id} className="flex items-start gap-3 p-2 rounded-xl hover:bg-zinc-900/50 transition-colors relative">
                                 <div className="flex-1 min-w-0">
-                                    <VideoCard video={video} />
+                                    <VideoCard video={video} width="100%" height="auto" />
                                 </div>
 
                                 {/* Ellipsis Menu Button */}
