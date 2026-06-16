@@ -8,6 +8,7 @@ const ChannelCard=({channel,width="100%",height="auto"})=>{
     const {user}=useAuth();
     const [isSubscribed,setIsSubscribed]=useState(false);
     const [loading,setLoading]=useState(false);
+    const isOwner=(user && user._id===channel._id);
     if(!channel) return null;
     const fetchSubscriptionStatus=async ()=>{
         if(!user?._id || !channel._id){
@@ -37,19 +38,11 @@ const ChannelCard=({channel,width="100%",height="auto"})=>{
         try{
             setLoading(true);
             if(isSubscribed){
-                await apiClient.post("subscriptions",{
-                    params:{
-                        channelId: channel._id
-                    }
-                });
+                await apiClient.post(`subscriptions/${channel._id}`);
                 setIsSubscribed(false);
             }
             else{
-                await apiClient.post("subscriptions",{
-                    params:{
-                        channelId: channel._id
-                    }
-                });
+                await apiClient.post(`subscriptions/${channel._id}`);
                 setIsSubscribed(true);
             }
         }
@@ -80,7 +73,7 @@ const ChannelCard=({channel,width="100%",height="auto"})=>{
                 <div className="shrink-0">
                     <button
                         onClick={handleSubscribeClick}
-                        disabled={loading}
+                        disabled={loading || isOwner}
                         className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${
                             isSubscribed
                                 ? "border border-zinc-600 bg-zinc-800 text-zinc-300 hover:bg-zinc-700"

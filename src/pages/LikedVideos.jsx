@@ -46,11 +46,15 @@ const LikedVideos=()=>{
         }
     }
     useEffect(() => {
+        if (!user) {
+            navigate("/signin");
+            return;
+        }
         setVideos([]);
         setPage(1);
         setHasMore(true);
         fetchLikedVideos(1);
-    }, []);
+    }, [user,navigate]);
     useEffect(() => {
         if (!sentinelRef.current || !hasMore || loading) return;
         

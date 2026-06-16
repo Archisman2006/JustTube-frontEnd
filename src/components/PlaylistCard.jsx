@@ -1,5 +1,6 @@
-import React from "react";
+import React,{useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
+import apiClient from "../services/api.js";
 
 const pluralize = (value, unit) => `${value} ${unit}${value === 1 ? "" : "s"} ago`;
 const formatRelativeTime = (dateValue) => {
@@ -28,17 +29,27 @@ const PlaylistCard = ({ playlist, disableNavigation = false, width = "100%", hei
     const playlistId = playlist._id;
     const owner = playlist.owner;
     const ownerId = owner?._id;
-    const ownerName = owner?.fullName || owner?.username || "Unknown channel";
-    const updatedAt = formatRelativeTime(playlist.updatedAt);
-
-    const firstVideo = Array.isArray(playlist.videos) ? playlist.videos[0] : null;
+    const ownerName = owner?.fullName
+    const createdAgo = formatRelativeTime(playlist.createdAt);
+    const [firstVideo,setFirstVideo]=useState(null);
     const thumbnail =
     firstVideo?.thumbnail ||
-    "https://via.placeholder.com/320x180?text=No+Video";
-
+    "/src/assets/images.png";
+    useEffect(()=>{
+        if(playlist.videos.length===0) return;
+        const fetchVideo=async ()=>{
+            try {
+            const response=await apiClient.get(`/videos/${playlist.videos[0]}`); 
+            setFirstVideo(response.data.data);  
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchVideo();
+    },[playlist])
     const openPlaylist = () => {
         if (disableNavigation) return;
-        navigate(`/playlist/${playlistId}`);
+        navigate(`/playlist?q=${playlistId}`);
     };
 
     const openChannel = (e) => {
@@ -60,7 +71,7 @@ const PlaylistCard = ({ playlist, disableNavigation = false, width = "100%", hei
                 alt={playlist.name}
                 className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
             <span className="absolute bottom-2 right-2 rounded bg-black/70 px-2 py-0.5 text-xs font-medium text-white">
                 Playlist
             </span>
@@ -78,7 +89,7 @@ const PlaylistCard = ({ playlist, disableNavigation = false, width = "100%", hei
                     {ownerName}
                 </button>
                 <span>·</span>
-                <span>{updatedAt}</span>
+                <span>{createdAgo}</span>
             </div>
         </div>
     </article>

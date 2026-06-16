@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { MoreHorizontal, ThumbsUp } from "lucide-react";
 import apiClient from "../services/api.js";
@@ -30,10 +30,12 @@ const ViewTweet = () => {
     const [searchParams] = useSearchParams();
     const tweetId = searchParams.get("q");
 
+    const tweetActionsRef=useRef(null);
     const [tweet, setTweet] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isTweetLiked, setIsTweetLiked] = useState(false);
     const [tweetLikesCount, setTweetLikesCount] = useState(0);
+    const [commentsCount,setCommentsCount]=useState(0);
     const [commentText, setCommentText] = useState("");
     const [isCommentFocused, setIsCommentFocused] = useState(false);
     const [commentsRefreshKey, setCommentsRefreshKey] = useState(0);
@@ -49,6 +51,18 @@ const ViewTweet = () => {
     });
     const [deleteTweetModal, setDeleteTweetModal] = useState({ isOpen: false, isConfirmed: false });
 
+    useEffect(()=>{
+            const handleClickOutside=(event)=>{
+                if(tweetActionsRef.current && 
+                    !tweetActionsRef.current.contains(event.target)){
+                        setIsTweetActionsOpen(false);        
+                    }
+            }
+            document.addEventListener("mousedown",handleClickOutside);
+            return ()=>{
+                document.removeEventListener("mousedown",handleClickOutside);
+            }
+        },[])
     useEffect(() => {
         if (unAuthModalOpen || deleteCommentModal.isOpen || editTweetModal.isOpen || deleteTweetModal.isOpen) {
             document.body.style.overflow = "hidden";
@@ -73,6 +87,7 @@ const ViewTweet = () => {
                 const response = await apiClient.get(`/tweets/${tweetId}`);
                 const tweetData = response.data.data.tweet;
                 setTweet(tweetData);
+                setCommentsCount(response.data.data.commentsCount)
                 setIsTweetLiked(response.data.data.isLikedByMe || false);
                 setTweetLikesCount(response.data.data.likesCount || 0);
             } catch (error) {
@@ -98,7 +113,7 @@ const ViewTweet = () => {
 
         try {
             const response = await apiClient.post(`/likes/tweets/${tweetId}`);
-            const isNowLiked = response.data && Object.keys(response.data).length > 0;
+            const isNowLiked = response?.data?.data && Object.keys(response.data.data).length > 0;
             setIsTweetLiked(isNowLiked);
             setTweetLikesCount((prev) => (isNowLiked ? prev + 1 : prev - 1));
         } catch (error) {
@@ -113,11 +128,11 @@ const ViewTweet = () => {
         }
         if (!commentText.trim()) return;
         try {
-            await apiClient.post(`/comments/${tweetId}`, { content: commentText });
+            await apiClient.post(`/comments/tweets/${tweetId}`, { content: commentText });
             setCommentText("");
             setIsCommentFocused(false);
             setCommentsRefreshKey((prev) => prev + 1);
-            setTweet((prev) => (prev ? { ...prev, commentsCount: (prev.commentsCount || 0) + 1 } : prev));
+            setCommentsCount((prev)=>prev+1);
         } catch (error) {
             console.error("Failed to post comment");
         }
@@ -143,7 +158,7 @@ const ViewTweet = () => {
             await apiClient.delete(`/comments/videos/${deleteCommentModal.commentId}`);
             setDeleteCommentModal({ isOpen: false, commentId: null });
             setCommentsRefreshKey((prev) => prev + 1);
-            setTweet((prev) => (prev ? { ...prev, commentsCount: Math.max(0, (prev.commentsCount || 0) - 1) } : prev));
+            setCommentsCount((prev)=>prev-1);
         } catch (error) {
             console.error("Failed to delete comment");
         }
@@ -171,13 +186,16 @@ const ViewTweet = () => {
             if (editTweetModal.image) {
                 formData.append("image", editTweetModal.image);
             }
-
+            setLoading(true);
             await apiClient.patch(`/tweets/${tweetId}`, formData);
             setEditTweetModal({ isOpen: false, content: "", image: null, initialContent: "", initialImage: "" });
             const response = await apiClient.get(`/tweets/${tweetId}`);
-            setTweet(response.data.data);
+            setTweet(response.data.data.tweet);
         } catch (error) {
             console.error("Failed to edit tweet");
+        }
+        finally{
+            setLoading(false);
         }
     };
 
@@ -224,10 +242,14 @@ const ViewTweet = () => {
                             <div className="min-w-0">
                                 <button
                                     type="button"
-                                    onClick={() => navigate(`/@${ownerUsername}/videos`)}
+                                    onClick={() => navigate(`/${ownerUsername}/videos`)}
                                     className="block text-left text-base font-semibold hover:underline"
                                 >
                                     {ownerFullName}
+                                </button>
+                                <button type="button"
+                                onClick={()=>navigate(`/${ownerUsername}/videos`)}>
+                                    @{ownerUsername}
                                 </button>
                             </div>
                         </div>
@@ -244,7 +266,8 @@ const ViewTweet = () => {
                                         <MoreHorizontal size={18} />
                                     </button>
                                     {isTweetActionsOpen && (
-                                        <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-zinc-700 bg-zinc-900 shadow-2xl overflow-hidden z-20">
+                                        <div ref={tweetActionsRef}
+                                         className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-zinc-700 bg-zinc-900 shadow-2xl overflow-hidden z-20">
                                             <button
                                                 type="button"
                                                 onClick={openEditTweetModal}
@@ -293,13 +316,13 @@ const ViewTweet = () => {
                     </button>
 
                     <div className="mt-6 mb-8 text-sm font-semibold text-gray-300">
-                        {tweet.commentsCount || 0} Comments
+                        {commentsCount} Comment{commentsCount>1?"s":""}
                     </div>
 
                     <div className="mb-8">
                         <div className="flex gap-4">
                             <img
-                                src={user?.avatar || "https://via.placeholder.com/48"}
+                                src={user?.avatar || "/src/assets/user.png"}
                                 alt="Your avatar"
                                 className="w-10 h-10 rounded-full object-cover"
                             />

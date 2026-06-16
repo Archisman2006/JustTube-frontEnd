@@ -24,8 +24,7 @@ const TweetCard=({tweet,width="100%",height="auto"})=>{
     if(!tweet) return null;
     const owner=tweet.owner;
     const tweetId=tweet._id;
-    const channelId=tweet.owner._id;
-    const fullname=owner.fullname;
+    const fullname=owner.fullName;
     const username=owner.username;
     const avatar=owner.avatar;
     const content=tweet.content;

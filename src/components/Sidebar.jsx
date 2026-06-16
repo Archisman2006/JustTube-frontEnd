@@ -35,8 +35,8 @@ const Sidebar=()=>{
     }
     const navButtonClass="w-full rounded-lg px-3 py-2.5 text-left text-sm text-zinc-400 hover:bg-zinc-800 hover:text-white transition";
     return(
-        <aside className={`shrink-0 border-r border-zinc-800 bg-zinc-950/95 ${isCollapsed ? "w-48" : "w-64"} transition-all duration-300`}>
-            <div className="border-b border-zinc-800 p-3">
+        <aside className={`shrink-0 border-r border-zinc-800 bg-zinc-950/95 ${isCollapsed ? "w-48" : "w-60"} transition-all duration-300 sticky top-16 h-[calc(100vh-64px)] flex flex-col`}>
+            <div className="border-b border-zinc-800 p-3 shrink-0">
                 <button
                     type="button"
                     onClick={toggleSidebar}
@@ -45,13 +45,13 @@ const Sidebar=()=>{
                     {isCollapsed?"Expand":"Collapse"}
                 </button>
             </div>
-            <div className="overflow-y-auto p-3">
+            <div className="overflow-y-auto p-3 flex-1 custom-scrollbar">
                 {isCollapsed ?(
                     <div className="space-y-1">
                         <button type="button" onClick={()=>navigate("/")} className={navButtonClass}>
                             Home
                         </button>
-                        <button type="button" onClick={()=>navigate("/subscriptions")} className={navButtonClass}>
+                        <button type="button" onClick={()=>user?navigate("/subscriptions"):navigate('/signin')} className={navButtonClass}>
                             Subscriptions
                         </button>
                         <div className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">
@@ -66,7 +66,7 @@ const Sidebar=()=>{
                             </button>
                         </section>
                         <section className="space-y-1">
-                            <button type="button" onClick={()=>navigate("/subscriptions")} className={navButtonClass}>
+                            <button type="button" onClick={()=>user?navigate("/subscriptions"):navigate('/signin')} className={navButtonClass}>
                                 Subscriptions
                             </button>
                             <div className="mt-2 space-y-0.5 pl-1">
@@ -94,7 +94,8 @@ const Sidebar=()=>{
                                     Liked Videos
                                 </button>
                                 <button type="button"
-                                onClick={()=>navigate(`/${user?.username}/videos`)} className={navButtonClass}>
+                                onClick={()=>user? navigate(`/${user?.username}/videos`):navigate('/signin')} 
+                                className={navButtonClass}>
                                     Your Videos
                                 </button>
                             </div>

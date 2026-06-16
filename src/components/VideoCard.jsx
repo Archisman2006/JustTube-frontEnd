@@ -75,7 +75,6 @@ const VideoCard=({video,width="100%",height="auto"})=>{
                     </p>
                 </div>
                 <div>
-
                 </div>
             </div>
         </article>

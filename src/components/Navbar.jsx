@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from "react";
+import React,{useEffect, useState, useRef} from "react";
 import {useAuth} from '../context/AuthContext'
 import { Search,EllipsisVertical, Plus } from "lucide-react";
 import { useNavigate,Link } from "react-router-dom";
@@ -11,6 +11,23 @@ const Navbar=()=>{
     const [isCreateOpen,setIsCreateOpen]=useState(false);
     const [isLoading,setIsLoading]=useState(false);
     const [error,setError]=useState(null);
+    const moreMenuRef=useRef(null);
+    const createMenuRef=useRef(null);
+
+    useEffect(()=>{
+        const handleClickOutside=(event)=>{
+            if(moreMenuRef.current && !moreMenuRef.current.contains(event.target)){
+                setIsMoreOpen(false);
+            }
+            if(createMenuRef.current && !createMenuRef.current.contains(event.target)){
+                setIsCreateOpen(false);
+            }
+        };
+        document.addEventListener("mousedown",handleClickOutside);
+        return ()=>{
+            document.removeEventListener("mousedown",handleClickOutside);
+        };
+    },[]);
     const avatarSrc=user?.avatar || "";
     const displayName=user?.username || "User";
     const handleSearch=(e)=>{
@@ -76,7 +93,7 @@ const Navbar=()=>{
 
                 <div className="flex items-center gap-1 shrink-0">
                     { user &&
-                    <div className="relative">
+                    <div className="relative" ref={moreMenuRef}>
                         <button
                             type="button"
                             onClick={()=>setIsMoreOpen((v)=>!v)}
@@ -100,7 +117,7 @@ const Navbar=()=>{
                     }
                     {!loading && user ?(
                         <>
-                            <div className="relative">
+                            <div className="relative" ref={createMenuRef}>
                                 <button
                                     type="button"
                                     onClick={()=>setIsCreateOpen((v)=>!v)}
@@ -131,7 +148,7 @@ const Navbar=()=>{
                                 onClick={handleProfileClick}
                                 aria-label="open profile"
                                 title={displayName}
-                                className="flex items-center justify-center h-5 w-5 rounded-full bg-zinc-800 text-zinc-300 hover:text-white ring-2 ring-zinc-700 hover:ring-rose-500 overflow-hidden transition-all duration-200 shrink-0"
+                                className="flex items-center justify-center h-8 w-8 rounded-full bg-zinc-800 text-zinc-300 hover:text-white ring-2 ring-zinc-700 hover:ring-rose-500 overflow-hidden transition-all duration-200 shrink-0"
                             >
                                 {avatarSrc ? (
                                     <img

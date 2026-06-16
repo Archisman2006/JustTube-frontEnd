@@ -30,6 +30,7 @@ const OpenPlaylist=()=>{
             const response = await apiClient.get(`/playlists/${playlistId}`, {
                 params: { page: pageNumber, limit: 12 }
             });
+            console.log(response);
             const { playlist, hasNextPage } = response.data.data;
             if (pageNumber === 1) {
                 // Save the overall playlist info (omitting the videos array from state to keep it clean)
@@ -39,7 +40,7 @@ const OpenPlaylist=()=>{
                     visibility: playlist.visibility,
                     owner: playlist.owner,
                     createdAt: playlist.createdAt,
-                    totalVideosCount: playlist.totalVideos
+                    totalVideosCount: playlist.totalVideosCount
                 });
                 setVideos(playlist.videos || []);
             } else {
@@ -109,14 +110,14 @@ const OpenPlaylist=()=>{
     if (error || !playlistInfo) return <div className="text-red-500 text-center mt-20">{error || "Playlist not found."}</div>;
     const thumbnail = videos.length > 0 && videos[0].thumbnail 
         ? videos[0].thumbnail 
-        : "https://via.placeholder.com/640x360?text=Empty+Playlist";
+        : "/src/assets/images.png";
     const isOwner = Boolean(user && playlistInfo.owner?._id === user._id);
     const descriptionText = playlistInfo.description || "";
     const isLongDesc = descriptionText.length > 30;
     return (
-        <div className="min-h-[calc(100vh-64px)] bg-[#0f0f0f] text-white flex flex-col lg:flex-row overflow-hidden">
+        <div className="h-auto lg:h-[calc(100vh-112px)] bg-[#0f0f0f] text-white flex flex-col lg:flex-row overflow-hidden">
             {/* LEFT COLUMN - Fixed Content */}
-            <div className="w-full lg:w-1/3 p-6 lg:border-r border-zinc-800 flex flex-col gap-6 lg:h-[calc(100vh-64px)] lg:sticky lg:top-0 lg:overflow-y-auto custom-scrollbar">
+            <div className="w-full lg:w-1/3 p-6 lg:border-r border-zinc-800 flex flex-col gap-6 lg:h-full lg:overflow-y-auto custom-scrollbar">
                 
                 {/* Playlist Thumbnail */}
                 <div className="w-full aspect-video rounded-xl overflow-hidden shadow-xl bg-zinc-800">
@@ -133,16 +134,16 @@ const OpenPlaylist=()=>{
                     {/* Owner details */}
                     <div 
                         className="flex items-center gap-3 cursor-pointer group mb-4"
-                        onClick={() => navigate(`/@${playlistInfo.owner?.userName}/videos`)}
+                        onClick={() => navigate(`/${playlistInfo.owner?.username}/videos`)}
                     >
                         <img 
-                            src={playlistInfo.owner?.avatar || "https://via.placeholder.com/48"} 
+                            src={playlistInfo.owner?.avatar || "/src/assets/userBlue.png"} 
                             alt={playlistInfo.owner?.userName} 
                             className="w-12 h-12 rounded-full object-cover border border-transparent group-hover:border-red-500 transition-colors"
                         />
                         <div>
                             <p className="font-semibold text-lg group-hover:text-red-400 transition-colors">
-                                {playlistInfo.owner?.fullName || playlistInfo.owner?.userName}
+                                {playlistInfo.owner?.fullName}
                             </p>
                         </div>
                     </div>
@@ -152,7 +153,7 @@ const OpenPlaylist=()=>{
                             {playlistInfo.visibility}
                         </span>
                         <span>•</span>
-                        <span>{playlistInfo.totalVideos} videos</span>
+                        <span>{playlistInfo.totalVideosCount} video {playlistInfo.totalVideosCount>1?"s":""}</span>
                     </div>
 
                     {/* Truncated Description */}
@@ -160,7 +161,7 @@ const OpenPlaylist=()=>{
                         className="bg-zinc-900/60 p-4 rounded-xl border border-zinc-800 cursor-pointer hover:bg-zinc-800 transition-colors"
                         onClick={() => setIsDescModalOpen(true)}
                     >
-                        <p className="text-sm text-gray-300 break-words">
+                        <p className="text-sm text-gray-300 wrap-break-word">
                             {isLongDesc ? (
                                 <>
                                     {descriptionText.substring(0, 30)}... 
@@ -177,7 +178,7 @@ const OpenPlaylist=()=>{
             </div>
 
             {/* RIGHT COLUMN - Scrollable Video List */}
-            <div className="w-full lg:w-2/3 p-6 lg:h-[calc(100vh-64px)] lg:overflow-y-auto custom-scrollbar bg-[#0f0f0f]">
+            <div className="w-full lg:w-2/3 p-6 lg:h-full lg:overflow-y-auto custom-scrollbar bg-[#0f0f0f]">
                 {videos.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full text-gray-500">
                         <p className="text-xl font-semibold mb-2">This playlist has no videos</p>

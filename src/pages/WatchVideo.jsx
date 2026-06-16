@@ -35,6 +35,7 @@ const WatchVideo=()=>{
     const [searchParams] = useSearchParams();
     const videoId = searchParams.get('q');
     const playerRef = useRef(null);
+    const videoActionsMenuRef=useRef(null);
 
     const [video, setVideo] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -85,6 +86,18 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
         };
         fetchVideo();
     }, [videoId]);
+    useEffect(()=>{
+        const handleClickOutside=(event)=>{
+            if(videoActionsMenuRef.current && 
+                !videoActionsMenuRef.current.contains(event.target)){
+                    setIsVideoActionsOpen(false);        
+                }
+        }
+        document.addEventListener("mousedown",handleClickOutside);
+        return ()=>{
+            document.removeEventListener("mousedown",handleClickOutside);
+        }
+    },[])
     const videoJsOptions = useMemo(() => {
         if (!video) return {};
         const src = video.streamingUrl || video.videoFile;
@@ -93,6 +106,8 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
             autoplay: true,
             controls: true,
             fluid: true,
+            playbackRates: [0.5, 1, 1.25, 1.5, 2],
+            poster: video.thumbnail || '',
             sources: [{ src, type }]
         };
     }, [video]);
@@ -164,6 +179,7 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
         try {
             await apiClient.delete(`/comments/videos/${deleteModal.commentId}`);
             setDeleteModal({ isOpen: false, commentId: null });
+            setCommentsCount((prev)=>prev-1)
             setCommentsRefreshKey(prev => prev + 1);
         } catch (error) {
             console.error("Failed to delete comment");
@@ -229,7 +245,7 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                         <div className="w-full sm:w-auto">
                             <ChannelCard channel={video.owner} width="100%" height="auto" />
                         </div>
-                        <div className="flex items-center">
+                        <div className="flex items-center gap-3 flex-wrap">
                             <button 
                                 onClick={handleLike}
                                 className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-full transition"
@@ -241,52 +257,50 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                                 />
                                 <span>{videoLikesCount}</span>
                             </button>
-                        </div>
-                        <div>
                             <button 
                                 type="button"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleSaveButtonClick();
                                 }}
-                                className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-full transition ml-3">
+                                className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-full transition">
                                 <Bookmark size={20} className="text-gray-300" />
                                 <span>Save</span>
                             </button>
+                            {isVideoOwner && (
+                                <div className="relative" ref={videoActionsMenuRef}>
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsVideoActionsOpen((value) => !value)}
+                                        className="flex items-center justify-center w-10 h-10 bg-zinc-800 hover:bg-zinc-700 rounded-full transition"
+                                        aria-label="Video actions"
+                                    >
+                                        <EllipsisVertical size={18} className="text-gray-300" />
+                                    </button>
+                                    {isVideoActionsOpen && (
+                                        <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-zinc-700 bg-zinc-900 shadow-2xl overflow-hidden z-20">
+                                            <button
+                                                type="button"
+                                                onClick={handleEditVideo}
+                                                className="w-full px-4 py-3 text-left text-sm font-semibold hover:bg-zinc-800 transition"
+                                            >
+                                                Edit video
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setIsVideoActionsOpen(false);
+                                                    setDeleteVideoModal({ isOpen: true, isConfirmed: false });
+                                                }}
+                                                className="w-full px-4 py-3 text-left text-sm font-semibold hover:bg-zinc-800 transition text-red-400"
+                                            >
+                                                Delete video
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
-                        {isVideoOwner && (
-                            <div className="relative ml-2">
-                                <button
-                                    type="button"
-                                    onClick={() => setIsVideoActionsOpen((value) => !value)}
-                                    className="flex items-center justify-center w-10 h-10 bg-zinc-800 hover:bg-zinc-700 rounded-full transition"
-                                    aria-label="Video actions"
-                                >
-                                    <EllipsisVertical size={18} className="text-gray-300" />
-                                </button>
-                                {isVideoActionsOpen && (
-                                    <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-zinc-700 bg-zinc-900 shadow-2xl overflow-hidden z-20">
-                                        <button
-                                            type="button"
-                                            onClick={handleEditVideo}
-                                            className="w-full px-4 py-3 text-left text-sm font-semibold hover:bg-zinc-800 transition"
-                                        >
-                                            Edit video
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setIsVideoActionsOpen(false);
-                                                setDeleteVideoModal({ isOpen: true, isConfirmed: false });
-                                            }}
-                                            className="w-full px-4 py-3 text-left text-sm font-semibold hover:bg-zinc-800 transition text-red-400"
-                                        >
-                                            Delete video
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        )}
                     </div>
 
                     {/* 4. Expandable Description Section */}
@@ -316,7 +330,7 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                     {/* 5. Add Comment Section */}
                     <div className="mb-8">
                         <h2 className="text-xl font-bold mb-4">
-                            {commentsCount || 0} Comments
+                            {commentsCount || 0} Comment{commentsCount>1?"s":""}
                         </h2>
                         
                         <div className="flex gap-4">
@@ -466,7 +480,7 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
     )}
     {/* Save to Playlist Modal */}
     {isSaveMenuOpen && modalRoot && createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80"
+        <div className="fixed inset-0 z-9999 flex items-center justify-center bg-black/80"
             onClick={(e) => handleBackdropClick(e, () => setIsSaveMenuOpen(false))}>
             <div className="bg-zinc-900 border border-zinc-700 p-6 rounded-xl max-w-sm w-full shadow-2xl mx-4 flex flex-col max-h-[70vh]">
                 <div className="flex justify-between items-center mb-4">
@@ -507,7 +521,7 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
     )}
     {/* Create New Playlist Modal */}
     {isCreatePlaylistOpen && modalRoot && createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80"
+        <div className="fixed inset-0 z-9999 flex items-center justify-center bg-black/80"
             onClick={(e) => handleBackdropClick(e, () => setIsCreatePlaylistOpen(false))}
         >
             <div className="bg-zinc-900 border border-zinc-700 p-6 rounded-xl max-w-sm w-full shadow-2xl mx-4">

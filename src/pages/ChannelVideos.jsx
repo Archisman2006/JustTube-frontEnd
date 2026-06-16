@@ -96,7 +96,7 @@ const ChannelVideos=()=>{
                         {videos.length==0 && <p>No Videos Posted</p>}
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                             {videos.map((video)=>(
-                                <VideoCard key={video._id} video={video} width="100%" height="auto"/>
+                                <VideoCard key={video._id} video={video} width="130%" height="auto"/>
                             ))}
                         </div>
                     </>
