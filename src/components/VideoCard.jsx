@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import thumbnailPlaceholder from '../assets/images.png'
 const pluralize=(value,unit)=>`${value} ${unit}${value==1?"":"s"} ago`;
 const formatRelativeTime=(createdAt)=>{
     const createdDate=new Date(createdAt);
@@ -27,7 +28,7 @@ const VideoCard=({video,width="100%",height="auto"})=>{
     const username=owner.username;
     const fullname = owner.fullName
     const avatar = owner.avatar
-    const thumbnail = video?.thumbnail || "/src/assets/images.png";
+    const thumbnail = video?.thumbnail || thumbnailPlaceholder;
     const views = typeof video.views === "number" ? video.views : 0;
     const timeAgo = formatRelativeTime(video.createdAt);
         const openChannel=(e)=>{

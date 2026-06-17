@@ -10,6 +10,7 @@ import VideoPlayer from "../components/VideoPlayer.jsx";
 import ChannelCard from "../components/ChannelCard.jsx";
 import VideoComments from "../components/VideoComments.jsx";
 import RecommendedVideos from "../components/RecommendedVideos.jsx";
+import avatarPlaceholder from '../assets/user.png'
 const pluralize = (value, unit) => `${value} ${unit}${value === 1 ? "" : "s"} ago`;
 const formatRelativeTime = (createdAt) => {
     const createdDate = new Date(createdAt);
@@ -359,7 +360,7 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                         
                         <div className="flex gap-4">
                             <img 
-                                src={user?.avatar || "/src/assets/user.png"} 
+                                src={user?.avatar || avatarPlaceholder} 
                                 alt="Your avatar" 
                                 className="w-10 h-10 rounded-full object-cover"
                             />

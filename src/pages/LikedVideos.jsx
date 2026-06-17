@@ -4,7 +4,8 @@ import { X, Trash2,EllipsisVertical } from "lucide-react";
 import apiClient from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import VideoCard from "../components/VideoCard.jsx";
-
+import thumbnailPlaceholder from '../assets/images.png'
+import avatarPlaceholder from '../assets/user.png'
 const LikedVideos=()=>{
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -96,7 +97,7 @@ const LikedVideos=()=>{
     if (error) return <div className="text-red-500 text-center mt-20">{error || "videos not found."}</div>;
     const thumbnail = videos.length > 0 && videos?.[0]?.video?.thumbnail 
         ? videos[0].video.thumbnail 
-        : "/src/assets/images.png";
+        : thumbnailPlaceholder;
     return (
         <div className="min-h-[calc(100vh-64px)] bg-[#0f0f0f] text-white flex flex-col lg:flex-row overflow-hidden">
             {/* LEFT COLUMN - Fixed Content */}
@@ -120,7 +121,7 @@ const LikedVideos=()=>{
                         onClick={() => navigate(`/${user.username}/videos`)}
                     >
                         <img 
-                            src={user?.avatar || "/src/assets/images.png"} 
+                            src={user?.avatar || avatarPlaceholder} 
                             alt={user?.userName} 
                             className="w-12 h-12 rounded-full object-cover border border-transparent group-hover:border-red-500 transition-colors"
                         />

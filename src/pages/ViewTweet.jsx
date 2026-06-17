@@ -4,7 +4,7 @@ import { MoreHorizontal, ThumbsUp } from "lucide-react";
 import apiClient from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import TweetComments from "../components/TweetComments.jsx";
-
+import avatarPlaceholder from '../assets/user.png'
 const pluralize = (value, unit) => `${value} ${unit}${value === 1 ? "" : "s"} ago`;
 const formatRelativeTime = (createdAt) => {
     const createdDate = new Date(createdAt);
@@ -326,7 +326,7 @@ const ViewTweet = () => {
                     <div className="mb-8">
                         <div className="flex gap-4">
                             <img
-                                src={user?.avatar || "/src/assets/user.png"}
+                                src={user?.avatar || avatarPlaceholder}
                                 alt="Your avatar"
                                 className="w-10 h-10 rounded-full object-cover"
                             />

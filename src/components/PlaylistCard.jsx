@@ -1,7 +1,7 @@
 import React,{useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../services/api.js";
-
+import thumbnailPlaceholder from '../assets/images.png'
 const pluralize = (value, unit) => `${value} ${unit}${value === 1 ? "" : "s"} ago`;
 const formatRelativeTime = (dateValue) => {
     const createdDate = new Date(dateValue);
@@ -33,8 +33,7 @@ const PlaylistCard = ({ playlist, disableNavigation = false, width = "100%", hei
     const createdAgo = formatRelativeTime(playlist.createdAt);
     const [firstVideo,setFirstVideo]=useState(null);
     const thumbnail =
-    firstVideo?.thumbnail ||
-    "/src/assets/images.png";
+    firstVideo?.thumbnail || thumbnailPlaceholder;
     useEffect(()=>{
         if(playlist.videos.length===0) return;
         const fetchVideo=async ()=>{

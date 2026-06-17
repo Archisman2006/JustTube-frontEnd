@@ -4,7 +4,8 @@ import { X, Trash2 } from "lucide-react";
 import apiClient from "../services/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import VideoCard from "../components/VideoCard.jsx";
-
+import thumbnailPlaceholder from '../assets/images.png'
+import userPlaceholder from '../assets/userBlue.png'
 const OpenPlaylist=()=>{
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -109,7 +110,7 @@ const OpenPlaylist=()=>{
     if (error || !playlistInfo) return <div className="text-red-500 text-center mt-20">{error || "Playlist not found."}</div>;
     const thumbnail = videos.length > 0 && videos[0].thumbnail 
         ? videos[0].thumbnail 
-        : "/src/assets/images.png";
+        : thumbnailPlaceholder;
     const isOwner = Boolean(user && playlistInfo.owner?._id === user._id);
     const descriptionText = playlistInfo.description || "";
     const isLongDesc = descriptionText.length > 30;
@@ -136,7 +137,7 @@ const OpenPlaylist=()=>{
                         onClick={() => navigate(`/${playlistInfo.owner?.username}/videos`)}
                     >
                         <img 
-                            src={playlistInfo.owner?.avatar || "/src/assets/userBlue.png"} 
+                            src={playlistInfo.owner?.avatar || userPlaceholder} 
                             alt={playlistInfo.owner?.username} 
                             className="w-12 h-12 rounded-full object-cover border border-transparent group-hover:border-red-500 transition-colors"
                         />

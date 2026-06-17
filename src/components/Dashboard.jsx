@@ -2,7 +2,8 @@ import React,{use, useEffect,useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import apiClient from "../services/api.js";
-
+import coverImagePlaceholder from '../assets/placeholder-image.png'
+import avatarPlaceholder from '../assets/user.png'
 const Dashboard=({channel})=>{
     const navigate=useNavigate();
     const {user}=useAuth();
@@ -128,7 +129,7 @@ const Dashboard=({channel})=>{
                 onClick={() => isOwner && setIsEditCoverImageModalOpen(true)}
             >
                 <img 
-                    src={coverImage || "/src/assets/placeholder-image.png"} 
+                    src={coverImage || coverImagePlaceholder} 
                     alt="Channel Banner" 
                     className="w-full h-full object-cover"
                 />
@@ -149,7 +150,7 @@ const Dashboard=({channel})=>{
                     onClick={() => isOwner && setIsEditAvatarModalOpen(true)}
                 >
                     <img 
-                        src={avatar || "/src/assets/user.png"} 
+                        src={avatar || avatarPlaceholder} 
                         alt={fullname} 
                         className="w-full h-full object-cover"
                     />
