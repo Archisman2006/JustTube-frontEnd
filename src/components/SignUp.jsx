@@ -134,7 +134,7 @@ const SignUp=()=> {
                     </div>
 
                     <div>
-                        <label className={labelStyle}>Password *</label>
+                        <label className={labelStyle}>Password</label>
                         <input
                             type="password"
                             name="password"

@@ -1,6 +1,6 @@
 import React,{useState} from "react";
 import { useNavigate } from "react-router-dom";
-const pluralize=(value,unit)=>`${value}${unit}${value==1?"":"s"} ago`;
+const pluralize=(value,unit)=>`${value} ${unit}${value==1?"":"s"} ago`;
 const formatRelativeTime=(createdAt)=>{
     const createdDate=new Date(createdAt);
     if(Number.isNaN(createdDate.getTime())) return "";

@@ -27,7 +27,7 @@ const VideoCard=({video,width="100%",height="auto"})=>{
     const username=owner.username;
     const fullname = owner.fullName
     const avatar = owner.avatar
-    const thumbnail = video.thumbnail;
+    const thumbnail = video?.thumbnail || "/src/assets/images.png";
     const views = typeof video.views === "number" ? video.views : 0;
     const timeAgo = formatRelativeTime(video.createdAt);
         const openChannel=(e)=>{
@@ -71,7 +71,7 @@ const VideoCard=({video,width="100%",height="auto"})=>{
                         {fullname}
                     </button>
                     <p className="mt-0.5 text-xs text-zinc-500">
-                        {views} views • {timeAgo}
+                        {views} view{views>1?"s":""} • {timeAgo}
                     </p>
                 </div>
                 <div>
