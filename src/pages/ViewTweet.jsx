@@ -187,7 +187,11 @@ const ViewTweet = () => {
                 formData.append("image", editTweetModal.image);
             }
             setLoading(true);
-            await apiClient.patch(`/tweets/${tweetId}`, formData);
+            await apiClient.patch(`/tweets/${tweetId}`, formData,{
+                headers:{
+                    'content-Type':'multipart/form-data'
+                }
+            });
             setEditTweetModal({ isOpen: false, content: "", image: null, initialContent: "", initialImage: "" });
             const response = await apiClient.get(`/tweets/${tweetId}`);
             setTweet(response.data.data.tweet);
@@ -203,7 +207,7 @@ const ViewTweet = () => {
         if (!deleteTweetModal.isConfirmed) return;
 
         try {
-            await apiClient.delete(`/tweet/${tweetId}`);
+            await apiClient.delete(`/tweets/${tweetId}`);
             setDeleteTweetModal({ isOpen: false, isConfirmed: false });
             navigate("/");
         } catch (error) {

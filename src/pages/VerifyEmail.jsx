@@ -94,7 +94,8 @@ const VerifyEmail=()=>{
 
                 <p className="text-sm text-gray-300 mb-6 text-center">
                     A verification code was sent to 
-                    <span className="text-white font-semibold">{email || 'your email'}</span>.
+                    <br/>
+                    <span className="text-white font-semibold">{email || 'your email'}</span>.<br/>
                     Enter the 6-digit code below.
                 </p>
 

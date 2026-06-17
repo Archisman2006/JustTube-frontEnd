@@ -30,7 +30,6 @@ const OpenPlaylist=()=>{
             const response = await apiClient.get(`/playlists/${playlistId}`, {
                 params: { page: pageNumber, limit: 12 }
             });
-            console.log(response);
             const { playlist, hasNextPage } = response.data.data;
             if (pageNumber === 1) {
                 // Save the overall playlist info (omitting the videos array from state to keep it clean)
@@ -138,7 +137,7 @@ const OpenPlaylist=()=>{
                     >
                         <img 
                             src={playlistInfo.owner?.avatar || "/src/assets/userBlue.png"} 
-                            alt={playlistInfo.owner?.userName} 
+                            alt={playlistInfo.owner?.username} 
                             className="w-12 h-12 rounded-full object-cover border border-transparent group-hover:border-red-500 transition-colors"
                         />
                         <div>
@@ -153,7 +152,7 @@ const OpenPlaylist=()=>{
                             {playlistInfo.visibility}
                         </span>
                         <span>•</span>
-                        <span>{playlistInfo.totalVideosCount} video {playlistInfo.totalVideosCount>1?"s":""}</span>
+                        <span>{playlistInfo.totalVideosCount} video{playlistInfo.totalVideosCount>1?"s":""}</span>
                     </div>
 
                     {/* Truncated Description */}

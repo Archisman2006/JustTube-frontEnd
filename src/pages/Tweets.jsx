@@ -94,7 +94,7 @@ const Tweets=()=>{
                 {initialLoading?(
                     <p>Loading Tweets...</p>
                 ):(
-                    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                    <div className="flex flex-col gap-4 max-w-2xl mx-auto">
                         {tweets.map((tweet)=>(
                             <TweetCard key={tweet._id} tweet={tweet} width="100%" height="auto"/>
                         ))}

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../services/api.js';
-
+import { useAuth } from '../context/AuthContext.jsx';
 const PostVideo=()=>{
     const navigate=useNavigate();
+    const {user}=useAuth();
     const [formData,setFormData]=useState({
         title:'',
         description:'',
@@ -45,9 +46,8 @@ const PostVideo=()=>{
         try {
             setLoading(true);
             const response=await apiClient.post('/videos',payload);
-            navigate(`/watch?q=${response.data.data._id}`);
+            navigate(`/${user.username}/videos`);
         } catch (err) {
-            console.log(err);
             setError(err?.response?.data?.message || 
                 'Network error. Please check your connection and try again.');
         }
