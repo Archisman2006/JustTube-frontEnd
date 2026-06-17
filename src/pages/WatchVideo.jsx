@@ -36,8 +36,12 @@ const WatchVideo=()=>{
     const videoId = searchParams.get('q');
     const playerRef = useRef(null);
     const videoActionsMenuRef=useRef(null);
+    const currentVideoRef = useRef(null);
 
     const [video, setVideo] = useState(null);
+    useEffect(() => {
+        currentVideoRef.current = video;
+    }, [video]);
     const [loading, setLoading] = useState(true);
     const [isVideoLiked, setIsVideoLiked] = useState(false);
     const [videoLikesCount, setVideoLikesCount] = useState(0);
@@ -71,7 +75,7 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
             try {
                 setLoading(true);
                 const response = await apiClient.post(`/videos/${videoId}`);
-                console.log("The response received is: ");
+                //console.log(response);
                 const videoData = response.data.data.updatedVideo;
                 setVideo(videoData);
                 setCommentsCount(response.data.data.commentsCount);
@@ -106,6 +110,7 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
             autoplay: true,
             controls: true,
             fluid: true,
+            aspectRatio: '16:9',
             playbackRates: [0.5, 1, 1.25, 1.5, 2],
             poster: video.thumbnail || '',
             sources: [{ src, type }]
@@ -113,7 +118,21 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
     }, [video]);
     const handlePlayerReady = useCallback((player)=>{
         playerRef.current=player;
-    },[])
+        player.on('error', () => {
+            const err = player.error();
+            const currentVideo = currentVideoRef.current;
+            if (err && currentVideo && currentVideo.videoFile) {
+                const currentSrc = player.currentSrc();
+                if (currentSrc && (currentSrc.includes('.m3u8') || currentSrc.includes('m3u8'))) {
+                    console.log("HLS stream failed to load (possibly still processing). Falling back to MP4...");
+                    player.error(null); // Clear error overlay
+                    player.src({ src: currentVideo.videoFile, type: 'video/mp4' });
+                    player.load();
+                    player.play().catch(e => console.log("Playback failed after fallback:", e));
+                }
+            }
+        });
+    }, [])
     const handleLike = async () => {
         if (!user) {
             setUnAuthModalOpen(true);
@@ -130,6 +149,10 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
     };
     const handlePostComment = async () => {
         if (!commentText.trim()) return;
+        if (!user) {
+            setUnAuthModalOpen(true);
+            return;
+        }
         try {
             await apiClient.post(`/comments/videos/${videoId}`, { content: commentText });
             setCommentText("");
@@ -146,7 +169,6 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
         setTimeout(() => setToast({ visible: false, message: '', type: 'success' }), 3000);
     };
     const handleSaveButtonClick = async () => {
-        console.log(user);
         if (!user) {
             setUnAuthModalOpen(true);
             return;
@@ -155,8 +177,6 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
         setLoadingPlaylists(true);
         try {
             const response = await apiClient.get('/playlists', { params: { userId: user._id } });
-            console.log(response);
-            console.log(isSaveMenuOpen);
             setPlaylists(response.data.data.docs || []); 
         } catch (error) {
             console.error("Failed to fetch playlists");
@@ -192,12 +212,16 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
     const handleDeleteVideo = async () => {
         if (!deleteVideoModal.isConfirmed) return;
         try {
+            setLoading(true);
             await apiClient.delete(`/videos/${videoId}`);
             setDeleteVideoModal({ isOpen: false, isConfirmed: false });
             setIsVideoActionsOpen(false);
             navigate("/");
         } catch (error) {
             console.error("Failed to delete video");
+        }
+        finally{
+            setLoading(false);
         }
     };
     const handleBackdropClick = (e, closeFunction) => {
@@ -498,7 +522,7 @@ const [toast, setToast] = useState({ visible: false, message: '', type: 'success
                         <div className="flex flex-col gap-2">
                             {playlists.map(pl => (
                                 <div onClick={() => handleAddToPlaylist(pl._id)} key={pl._id}>
-                                    <PlaylistCard playlist={pl} disableNavigation={true} width="100%" height="auto"/>
+                                    <PlaylistCard playlist={pl} disableNavigation={true} width="50%" height="auto"/>
                                 </div>
                             ))}
                         </div>
