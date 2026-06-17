@@ -2,12 +2,14 @@ import React,{useState,useEffect,useRef} from "react";
 import { useNavigate,useParams } from "react-router-dom";
 import apiClient from '../services/api.js'
 import PlaylistCard from '../components/PlaylistCard.jsx'
+import Dashboard from "../components/Dashboard.jsx";
 const ChannelPlaylists=()=>{
     const {username}=useParams();
     const navigate=useNavigate();
     const sentinelRef=useRef(null);
     const [playlists,setPlaylists]=useState([]);
     const [page,setPage]=useState(1);
+    const [channel,setChannel]=useState(null);
     const [hasMore,setHasMore]=useState(true);
     const [loading,setLoading]=useState(false);
     const [initialLoading,setInitialLoading]=useState(true);
@@ -36,8 +38,20 @@ const ChannelPlaylists=()=>{
             setInitialLoading(false);
         }
     }
+    const fetchChannel=async ()=>{
+        try {
+            setLoading(true);
+            const response= await apiClient.get(`/users/channel/${username}`);
+            setChannel(response.data.data);
+        } catch (error) {
+            setError(error.response.message || "Network error. Try again later");
+        }
+        finally{
+            setLoading(false);
+        }
+    }
     useEffect(()=>{
-        fetchPlaylists(1)
+        fetchPlaylists(1); fetchChannel();
     },[])
     useEffect(()=>{
         if (!sentinelRef.current || !hasMore || loading) return;
@@ -64,6 +78,9 @@ const ChannelPlaylists=()=>{
     };
     return(
         <main>
+            <div>
+                <Dashboard channel={channel}/>
+            </div>
             <div className="flex justify-center items-center gap-4 mb-6">
                 <button 
                     type="button" 

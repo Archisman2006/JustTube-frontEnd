@@ -2,11 +2,13 @@ import React,{useState,useEffect,useRef} from "react";
 import { useNavigate,useParams } from "react-router-dom";
 import apiClient from '../services/api.js'
 import TweetCard from '../components/TweetCard.jsx'
+import Dashboard from "../components/Dashboard.jsx";
 const ChannelTweets=()=>{
     const {username}=useParams();
     const navigate=useNavigate();
     const sentinelRef=useRef(null);
     const [tweets,setTweets]=useState([]);
+    const [channel,setChannel]=useState(null);
     const [page,setPage]=useState(1);
     const [hasMore,setHasMore]=useState(true);
     const [loading,setLoading]=useState(false);
@@ -36,8 +38,20 @@ const ChannelTweets=()=>{
             setInitialLoading(false);
         }
     }
+    const fetchChannel=async ()=>{
+        try {
+            setLoading(true);
+            const response= await apiClient.get(`/users/channel/${username}`);
+            setChannel(response.data.data);
+        } catch (error) {
+            setError(error.response.message || "Network error. Try again later");
+        }
+        finally{
+            setLoading(false);
+        }
+    }
     useEffect(()=>{
-        fetchTweets(1)
+        fetchTweets(1),fetchChannel();
     },[])
     useEffect(()=>{
         if (!sentinelRef.current || !hasMore || loading) return;
@@ -64,6 +78,9 @@ const ChannelTweets=()=>{
     };
     return(
         <main>
+            <div>
+                <Dashboard channel={channel}/>
+            </div>
             <div className="flex justify-center items-center gap-4 mb-6">
                 <button 
                     type="button" 
@@ -94,7 +111,7 @@ const ChannelTweets=()=>{
                 ):(
                     <>
                         {tweets.length==0 && <p>No Tweets Posted</p>}
-                        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                        <div className="flex flex-col gap-4 max-w-2xl mx-auto">
                             {tweets.map((tweet)=>(
                                 <TweetCard key={tweet._id} tweet={tweet} width="100%" height="auto"/>
                             ))}

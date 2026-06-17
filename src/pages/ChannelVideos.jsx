@@ -2,11 +2,13 @@ import React,{useState,useEffect,useRef} from "react";
 import { useNavigate,useParams } from "react-router-dom";
 import apiClient from '../services/api.js'
 import VideoCard from '../components/VideoCard.jsx'
+import Dashboard from "../components/Dashboard.jsx";
 const ChannelVideos=()=>{
     const {username}=useParams();
     const navigate=useNavigate();
     const sentinelRef=useRef(null);
     const [videos,setVideos]=useState([]);
+    const [channel,setChannel]=useState(null);
     const [page,setPage]=useState(1);
     const [hasMore,setHasMore]=useState(true);
     const [loading,setLoading]=useState(false);
@@ -36,9 +38,21 @@ const ChannelVideos=()=>{
             setInitialLoading(false);
         }
     }
+    const fetchChannel=async ()=>{
+        try {
+            setLoading(true);
+            const response= await apiClient.get(`/users/channel/${username}`);
+            setChannel(response.data.data);
+        } catch (error) {
+            setError(error.response.message || "Network error. Try again later");
+        }
+        finally{
+            setLoading(false);
+        }
+    }
     useEffect(()=>{
-        fetchVideos(1)
-    },[])
+        fetchVideos(1); fetchChannel();
+    },[username])
     useEffect(()=>{
         if (!sentinelRef.current || !hasMore || loading) return;
         const observer= new IntersectionObserver(
@@ -64,6 +78,9 @@ const ChannelVideos=()=>{
     };
     return(
         <main>
+            <div>
+                <Dashboard channel={channel}/>
+            </div>
             <div className="flex justify-center items-center gap-4 mb-6">
                 <button 
                     type="button" 
@@ -96,7 +113,7 @@ const ChannelVideos=()=>{
                         {videos.length==0 && <p>No Videos Posted</p>}
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                             {videos.map((video)=>(
-                                <VideoCard key={video._id} video={video} width="130%" height="auto"/>
+                                <VideoCard key={video._id} video={video} width="100%" height="auto"/>
                             ))}
                         </div>
                     </>
