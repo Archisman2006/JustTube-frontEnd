@@ -4,3 +4,28 @@ body {
     background-color: #0f0f0f; 
     color: #f1f1f1;
 }
+
+/* Custom scrollbar styling */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #000000;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #ef4444; /* red-500 */
+    border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #dc2626; /* red-600 */
+}
+
+/* Firefox compatibility */
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #ef4444 #000000;
+}
