@@ -49,6 +49,7 @@ const Navbar=()=>{
         try {
             const response=await apiClient.post('users/logout');
             logout();
+            navigate('/');
         } catch (error) {
             console.log(error);
             setError(error.response?.data?.message || "error occured while logging out")
@@ -57,9 +58,6 @@ const Navbar=()=>{
             setIsLoading(false);
         }
     }
-    useEffect(()=>{
-        if(!user) navigate('/');
-    },[user])
     return (
         <header className="sticky top-0 z-50 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800">
             <div className="flex items-center justify-between px-6 py-3 gap-4">
