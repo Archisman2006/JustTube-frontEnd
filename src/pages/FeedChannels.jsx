@@ -74,7 +74,8 @@ const FeedChannels = () => {
 
     return (
         <main>
-            <div>All subscriptions</div>
+            <div>Subscribed Channels</div>
+            <br/>
             {error ? <p>{error}</p> : null}
 
             <section>

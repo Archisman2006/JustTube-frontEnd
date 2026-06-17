@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate,useSearchParams} from 'react-router-dom';
 import apiClient from '../services/api.js';
 const EditVideo=()=>{
-    const searchParams=useSearchParams();
+    const [searchParams]=useSearchParams();
     const videoId=searchParams.get('q');
     const [video,setVideo]=useState(null);
     const navigate=useNavigate();
@@ -21,10 +21,13 @@ const EditVideo=()=>{
         try {
             setLoading(true);
             const response=await apiClient.get(`videos/${videoId}`);
-            setVideo(response.data.data.video);
-            setFormData({title:video.title,description:video.description,isPublished:video.isPublished})
+            const videoData=response.data.data;
+            setVideo(videoData);
+            setFormData({title:videoData.title,description:videoData.description,
+                isPublished:videoData.isPublished})
         } catch (error) {
-            setError(err?.response?.data?.message || 
+            console.log(error);
+            setError(error?.response?.data?.message || 
                 'Network error. Please check your connection and try again.');
         }
         finally{
@@ -62,8 +65,9 @@ const EditVideo=()=>{
         if(files.thumbnail)
             payload.append('thumbnail',files.thumbnail);
         try {
-            const response=await apiClient.post(`/videos/${videoId}`,payload);
-            navigate(`videos/watch?q=${videoId}`);
+            setLoading(true);
+            const response=await apiClient.patch(`/videos/${videoId}`,payload);
+            navigate(`/watch?q=${videoId}`);
         } catch (err) {
             setError(err?.response?.data?.message || 
                 'Network error. Please check your connection and try again.');
@@ -139,7 +143,7 @@ const EditVideo=()=>{
                         type="submit"
                         disabled={!isFormValid || loading}
                         className={`w-full py-3 mt-4 rounded font-bold uppercase tracking-wider transition-all duration-200 ${
-                            isFormValid && !isLoading
+                            isFormValid && !loading
                                 ? 'bg-red-600 text-white hover:bg-red-500 hover:shadow-[0_0_15px_rgba(220,38,38,0.5)] cursor-pointer'
                                 : 'bg-black text-gray-500 border border-red-900 cursor-not-allowed opacity-70'
                         }`}

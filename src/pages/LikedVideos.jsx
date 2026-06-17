@@ -117,7 +117,7 @@ const LikedVideos=()=>{
                     {/* Owner details */}
                     <div 
                         className="flex items-center gap-3 cursor-pointer group mb-4"
-                        onClick={() => navigate(`/${user.userName}/videos`)}
+                        onClick={() => navigate(`/${user.username}/videos`)}
                     >
                         <img 
                             src={user?.avatar || "/src/assets/images.png"} 
@@ -148,7 +148,7 @@ const LikedVideos=()=>{
                         {videos.map((video, index) => (
                             <div key={`${video._id}-${index}`} className="flex items-start gap-4 p-2 rounded-xl hover:bg-zinc-900/50 transition-colors group">
                                 <div className="flex-1 min-w-0">
-                                    <VideoCard video={video?.video} width="100%" height="auto" />
+                                    <VideoCard video={video?.video} width="65%" height="auto" />
                                 </div>
                                 {/* Ellipsis Menu Button */}
                                 <div className="relative mt-2 shrink-0">
