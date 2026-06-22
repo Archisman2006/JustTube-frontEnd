@@ -130,7 +130,7 @@ const You = () => {
                                 const videoData = listType === "liked" ? item.video : item;
                                 if (!videoData) return null;
                                 return (
-                                    <div key={`${videoData._id}-${idx}`} className="w-[220px] sm:w-[260px] md:w-[280px] shrink-0">
+                                    <div key={`${videoData._id}-${idx}`} className="w-55 sm:w-65 md:w-70 shrink-0">
                                         <VideoCard video={videoData} width="100%" height="auto" />
                                     </div>
                                 );
