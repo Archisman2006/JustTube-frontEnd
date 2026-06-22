@@ -31,7 +31,7 @@ const BottomNav = () => {
 
     const handleYouClick = () => {
         if (user) {
-            navigate("/you/history");
+            navigate("/you");
         } else {
             navigate("/signin");
         }

@@ -22,6 +22,7 @@ import EditVideo from "./pages/EditVideo.jsx";
 import SignIn from "./pages/SignIn.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import VerifyEmail from "./pages/VerifyEmail.jsx";
+import You from "./pages/You.jsx";
 
 const App=()=>{
     return(
@@ -44,6 +45,7 @@ const App=()=>{
                     <Route path="/search/tweets" element={<Tweets/>}/>
                     <Route path="/search/playlists" element={<Playlists/>}/>
                     <Route path="/verify-email" element={<VerifyEmail/>}/>
+                    <Route path="/you" element={<You/>}/>
                     <Route path="/you/history" element={<WatchHistory/>}/>
                     <Route path="/you/liked-videos" element={<LikedVideos/>}/>
                     <Route path="/post/video" element={<PostVideo/>}/>

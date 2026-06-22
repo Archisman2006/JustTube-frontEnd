@@ -54,7 +54,10 @@ const Sidebar=()=>{
                         <button type="button" onClick={()=>user?navigate("/subscriptions"):navigate('/signin')} className={navButtonClass}>
                             Subscriptions
                         </button>
-                        <div className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                        <div 
+                            onClick={()=>navigate("/you")}
+                            className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-500 hover:text-white cursor-pointer transition w-fit"
+                        >
                             You
                         </div>
                     </div>
@@ -83,7 +86,10 @@ const Sidebar=()=>{
                             </div>
                         </section>
                         <section className="space-y-1">
-                            <div className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                            <div 
+                                onClick={()=>navigate("/you")}
+                                className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-zinc-500 hover:text-white cursor-pointer transition w-fit"
+                            >
                                 You
                             </div>
                             <div className="space-y-0.5">
