@@ -35,7 +35,7 @@ const Sidebar=()=>{
     }
     const navButtonClass="w-full rounded-lg px-3 py-2.5 text-left text-sm text-zinc-400 hover:bg-zinc-800 hover:text-white transition";
     return(
-        <aside className={`shrink-0 border-r border-zinc-800 bg-zinc-950/95 ${isCollapsed ? "w-48" : "w-60"} transition-all duration-300 sticky top-16 h-[calc(100vh-64px)] flex flex-col`}>
+        <aside className={`hidden md:flex shrink-0 border-r border-zinc-800 bg-zinc-950/95 ${isCollapsed ? "w-48" : "w-60"} transition-all duration-300 sticky top-16 h-[calc(100vh-64px)] flex-col`}>
             <div className="border-b border-zinc-800 p-3 shrink-0">
                 <button
                     type="button"
