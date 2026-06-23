@@ -85,7 +85,7 @@ const You = () => {
     };
 
     if (loading) {
-        return <div className="text-white text-center mt-20 text-xl font-medium">Loading page details...</div>;
+        return <div className="text-white text-center mt-20 text-xl font-medium">Loading...</div>;
     }
 
     if (error) {
@@ -101,7 +101,6 @@ const You = () => {
                     className="text-xl md:text-2xl font-bold text-white hover:text-rose-500 hover:underline cursor-pointer transition mb-4 w-fit flex items-baseline gap-2"
                 >
                     {title}
-                    <span className="text-zinc-500 text-xs font-normal tracking-wide">(see all)</span>
                 </h2>
 
                 {videos.length === 0 ? (
