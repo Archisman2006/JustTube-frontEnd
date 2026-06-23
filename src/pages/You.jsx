@@ -98,7 +98,7 @@ const You = () => {
                 {/* Carousel Header */}
                 <h2 
                     onClick={onHeaderClick}
-                    className="text-xl md:text-2xl font-bold text-white hover:text-rose-500 hover:underline cursor-pointer transition mb-4 w-fit flex items-baseline gap-2"
+                    className="text-xl md:text-2xl font-bold text-white hover:text-rose-500 hover:cursor-pointer transition mb-4 w-fit flex items-baseline gap-2"
                 >
                     {title}
                 </h2>
@@ -108,7 +108,7 @@ const You = () => {
                         No videos found in {title.toLowerCase()}.
                     </div>
                 ) : (
-                    <div className="relative flex items-center group">
+                    <div className="relative flex items-center">
                         {/* Left Scroll Button (Desktop Only) */}
                         <button 
                             type="button"
