@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../services/api.js';
 import {useAuth} from '../context/AuthContext.jsx';
+import { Eye,EyeOff } from 'lucide-react';
 const SignIn = () => {
     const navigate = useNavigate();
     const {login}=useAuth();
@@ -11,6 +12,10 @@ const SignIn = () => {
     });
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const toggleShowPassword = () => {
+        setShowPassword((prev) => !prev);
+    };
     const isFormValid =
         formData.identifier.trim() !== '' &&
         formData.password.length >= 8;
@@ -74,9 +79,19 @@ const SignIn = () => {
                     </div>
 
                     <div>
-                        <label className={labelStyle}>Password</label>
+                        <div className="flex items-center justify-between mb-1.5">
+                            <label className="text-sm font-medium text-zinc-300">Password</label>
+                            <button
+                                type="button"
+                                onClick={toggleShowPassword}
+                                className="text-zinc-400 hover:text-zinc-200 transition-colors focus:outline-none"
+                                aria-label={showPassword ? "Hide password" : "Show password"}
+                            >
+                                {showPassword ? <EyeOff /> : <Eye />}
+                            </button>
+                        </div>
                         <input
-                            type="password"
+                            type={showPassword ? 'text' : 'password'}
                             name="password"
                             value={formData.password}
                             onChange={handleChange}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../services/api.js';
+import { Eye,EyeOff } from 'lucide-react';
 const SignUp=()=> {
     const navigate = useNavigate();
     // State for text inputs
@@ -43,7 +44,10 @@ const SignUp=()=> {
         setFiles((prev) => ({ ...prev, [name]: selectedFiles[0] }));
         if (error) setError('');
     };
-
+    const [showPassword, setShowPassword] = useState(false);
+        const toggleShowPassword = () => {
+            setShowPassword((prev) => !prev);
+        };
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!isFormValid) return;
@@ -134,9 +138,12 @@ const SignUp=()=> {
                     </div>
 
                     <div>
-                        <label className={labelStyle}>Password</label>
+                        <div className="flex items-center justify-between mb-1.5">
+                            <label className={labelStyle}>Password</label>
+                            <button type='button' onClick={toggleShowPassword}>{showPassword?<EyeOff/>:<Eye/>}</button>
+                        </div>
                         <input
-                            type="password"
+                            type={showPassword?"text":"password"}
                             name="password"
                             value={formData.password}
                             onChange={handleTextChange}
