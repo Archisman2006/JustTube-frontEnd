@@ -48,6 +48,7 @@ const ViewTweet = () => {
         image: null,
         initialContent: "",
         initialImage: "",
+        preview: "",
     });
     const [deleteTweetModal, setDeleteTweetModal] = useState({ isOpen: false, isConfirmed: false });
 
@@ -173,6 +174,21 @@ const ViewTweet = () => {
             image: null,
             initialContent: tweet.content || "",
             initialImage: tweet.image || "",
+            preview: tweet.image || "",
+        });
+    };
+
+    const closeEditTweetModal = () => {
+        if (editTweetModal.preview && editTweetModal.preview !== editTweetModal.initialImage) {
+            URL.revokeObjectURL(editTweetModal.preview);
+        }
+        setEditTweetModal({
+            isOpen: false,
+            content: "",
+            image: null,
+            initialContent: "",
+            initialImage: "",
+            preview: "",
         });
     };
 
@@ -192,7 +208,7 @@ const ViewTweet = () => {
                     'content-Type':'multipart/form-data'
                 }
             });
-            setEditTweetModal({ isOpen: false, content: "", image: null, initialContent: "", initialImage: "" });
+            closeEditTweetModal();
             const response = await apiClient.get(`/tweets/${tweetId}`);
             setTweet(response.data.data.tweet);
         } catch (error) {
@@ -433,17 +449,7 @@ const ViewTweet = () => {
             {editTweetModal.isOpen && (
                 <div
                     className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
-                    onClick={(e) =>
-                        handleBackdropClick(e, () =>
-                            setEditTweetModal({
-                                isOpen: false,
-                                content: "",
-                                image: null,
-                                initialContent: "",
-                                initialImage: "",
-                            })
-                        )
-                    }
+                    onClick={(e) => handleBackdropClick(e, closeEditTweetModal)}
                 >
                     <div className="bg-zinc-900 border border-zinc-700 p-6 rounded-xl max-w-md w-full shadow-2xl mx-4">
                         <h3 className="text-xl font-bold mb-4">Edit tweet</h3>
@@ -462,14 +468,24 @@ const ViewTweet = () => {
                                 <input
                                     type="file"
                                     accept="image/*"
-                                    onChange={(e) => setEditTweetModal((prev) => ({ ...prev, image: e.target.files?.[0] || null }))}
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0] || null;
+                                        setEditTweetModal((prev) => {
+                                            if (prev.preview && prev.preview !== prev.initialImage) {
+                                                URL.revokeObjectURL(prev.preview);
+                                            }
+                                            return {
+                                                ...prev,
+                                                image: file,
+                                                preview: file ? URL.createObjectURL(file) : prev.initialImage,
+                                            };
+                                        });
+                                    }}
                                     className="w-full text-sm text-gray-300 file:mr-4 file:rounded-full file:border-0 file:bg-zinc-800 file:px-4 file:py-2 file:text-white hover:file:bg-zinc-700"
                                 />
-                                {editTweetModal.image ? (
-                                    <p className="mt-2 text-sm text-gray-400">Selected: {editTweetModal.image.name}</p>
-                                ) : editTweetModal.initialImage ? (
-                                    <div className="mt-3 overflow-hidden rounded-lg border border-zinc-800">
-                                        <img src={editTweetModal.initialImage} alt="Current tweet attachment" className="w-full object-cover" />
+                                {editTweetModal.preview ? (
+                                    <div className="mt-3 h-56 w-full overflow-hidden rounded-lg border border-zinc-800">
+                                        <img src={editTweetModal.preview} alt="Tweet attachment preview" className="w-full h-full object-cover" />
                                     </div>
                                 ) : null}
                             </div>
@@ -477,15 +493,7 @@ const ViewTweet = () => {
                         <div className="flex justify-end gap-4">
                             <button
                                 type="button"
-                                onClick={() =>
-                                    setEditTweetModal({
-                                        isOpen: false,
-                                        content: "",
-                                        image: null,
-                                        initialContent: "",
-                                        initialImage: "",
-                                    })
-                                }
+                                onClick={closeEditTweetModal}
                                 className="px-4 py-2 font-semibold hover:bg-zinc-800 rounded"
                             >
                                 Cancel
