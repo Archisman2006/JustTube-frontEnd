@@ -34,8 +34,14 @@ const SignIn = () => {
                 identifier: formData.identifier,
                 password: formData.password,
             });
-            login(response.data.data.user);
-            navigate('/');
+            const user=response.data.data.user;
+            if(user.isVerified==='false' || user.isVerified===false){
+                navigate('/verify-email',{state: { email: user.email }});
+            }
+            else{
+                login(user);
+                navigate('/');
+            }
         } catch (err) {
             console.log(err);
             setError(
