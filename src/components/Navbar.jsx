@@ -61,11 +61,12 @@ const Navbar=()=>{
         navigate(`/${user?.username}/videos`)
     }
 
-    const handleSignOut=async ()=>{
+    const handleSignOut=async (closeFunction)=>{
         if(!user) return;
         try {
             const response=await apiClient.post('users/logout');
             logout();
+            closeFunction(false);
             navigate('/');
         } catch (error) {
             console.log(error);
@@ -101,7 +102,7 @@ const Navbar=()=>{
                         <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-zinc-700 bg-zinc-900 py-1 shadow-xl shadow-black/40 z-50">
                             <button
                                 type="button"
-                                onClick={handleSignOut}
+                                onClick={()=>handleSignOut(setIsMoreOpenVal)}
                                 className="w-full px-4 py-2.5 text-left text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white transition"
                             >
                                 Sign Out
