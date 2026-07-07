@@ -32,7 +32,7 @@ const VerifyEmail=()=>{
         if(e.key==='ArrowLeft' && index>0){
             inputRefs.current[index-1]?.focus();
         }
-        if(e.kry==='ArrowRight' && index<5){
+        if(e.key==='ArrowRight' && index<5){
             inputRefs.current[index+1]?.focus();
         }
     }
@@ -87,7 +87,7 @@ const VerifyEmail=()=>{
     }
     return (
         <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
-            <div className="w-full max-w-md border-2 border-red-600 rounded-xl p-8 bg-black shadow-[0_0_20px_rgba(220,38,38,0.2)]">
+            <div className="w-full max-w-md border-2 border-red-600 rounded-xl p-5 sm:p-8 bg-black shadow-[0_0_20px_rgba(220,38,38,0.2)]">
                 <h2 className="text-3xl font-bold text-center tracking-wide mb-4">
                     VERIFY EMAIL
                 </h2>
@@ -112,7 +112,7 @@ const VerifyEmail=()=>{
                 )}
 
                 <form onSubmit={handleVerify} onPaste={handlePaste} noValidate>
-                    <div className="flex justify-between gap-2 mb-6">
+                    <div className="flex justify-between gap-1 sm:gap-2 mb-6">
                         {digits.map((digit, index) => (
                             <input
                                 key={index}
@@ -125,7 +125,7 @@ const VerifyEmail=()=>{
                                 value={digit}
                                 onChange={(e) => handleDigitChange(index, e.target.value)}
                                 onKeyDown={(e) => handleKeyDown(index, e)}
-                                className="w-12 h-12 text-center text-xl bg-black text-white border border-red-600 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
+                                className="w-9 h-9 sm:w-12 sm:h-12 text-center text-lg sm:text-xl bg-black text-white border border-red-600 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
                                 aria-label={`Verification digit ${index + 1}`}
                                 required
                             />
