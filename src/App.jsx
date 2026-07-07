@@ -23,6 +23,7 @@ import SignIn from "./pages/SignIn.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import VerifyEmail from "./pages/VerifyEmail.jsx";
 import You from "./pages/You.jsx";
+import FinishOnboarding from "./pages/FinishOnboarding.jsx";
 
 const App=()=>{
     return(
@@ -32,6 +33,7 @@ const App=()=>{
                     <Route path="/" element={<Home/>}/>
                     <Route path="/signin" element={<SignIn/>}/>
                     <Route path="/signup" element={<SignUp/>}/>
+                    <Route path="/finish-onboarding" element={<FinishOnboarding/>}/>
                     <Route path="/:username">
                         <Route path="videos" element={<ChannelVideos/>}/>
                         <Route path="tweets" element={<ChannelTweets/>}/>
