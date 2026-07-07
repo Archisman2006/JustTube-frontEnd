@@ -24,6 +24,7 @@ import SignUp from "./pages/SignUp.jsx";
 import VerifyEmail from "./pages/VerifyEmail.jsx";
 import You from "./pages/You.jsx";
 import FinishOnboarding from "./pages/FinishOnboarding.jsx";
+import ResetPassword from "./pages/resetPassword.jsx";
 
 const App=()=>{
     return(
@@ -47,6 +48,7 @@ const App=()=>{
                     <Route path="/search/tweets" element={<Tweets/>}/>
                     <Route path="/search/playlists" element={<Playlists/>}/>
                     <Route path="/verify-email" element={<VerifyEmail/>}/>
+                    <Route path="/reset-password/:token" element={<ResetPassword/>}/>
                     <Route path="/you" element={<You/>}/>
                     <Route path="/you/history" element={<WatchHistory/>}/>
                     <Route path="/you/liked-videos" element={<LikedVideos/>}/>
