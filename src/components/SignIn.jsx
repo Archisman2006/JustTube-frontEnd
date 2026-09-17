@@ -39,7 +39,7 @@ const SignIn = () => {
                 navigate('/verify-email',{state: { email: user.email }});
             }
             else{
-                login(user);
+                login(user, response.data.data.accessToken);
                 navigate('/');
             }
         } catch (err) {

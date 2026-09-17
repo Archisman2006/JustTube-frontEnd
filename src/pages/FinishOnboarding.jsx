@@ -104,7 +104,7 @@ const FinishOnboarding = () => {
             });
 
             if (response.data && response.data.success) {
-                login(response.data.data.user);
+                login(response.data.data.user, response.data.data.accessToken);
                 navigate("/");
             }
         } catch (err) {

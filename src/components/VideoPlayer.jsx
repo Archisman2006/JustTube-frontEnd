@@ -121,7 +121,7 @@ const VideoPlayer = ({ options, onReady }) => {
                 >
                     {/* Dropdown */}
                     {showQualityMenu && (
-                        <div className="mb-2 bg-black/90 backdrop-blur rounded-lg overflow-hidden shadow-2xl border border-white/10 min-w-[90px]">
+                        <div className="mb-2 bg-black/90 backdrop-blur rounded-lg overflow-hidden shadow-2xl border border-white/10 min-w-22.5">
                             <button
                                 onClick={() => handleQualityChange(-1)}
                                 className={`block w-full text-right px-4 py-2 text-sm transition hover:bg-white/10 ${

@@ -28,7 +28,7 @@ const SignIn=()=>{
                 if (response.data.data.usernameRequired) {
                     navigate('/finish-onboarding', { state: { tempToken: response.data.data.tempToken } });
                 } else {
-                    login(response.data.data.user);
+                    login(response.data.data.user, response.data.data.accessToken);
                     navigate('/');
                 }
             }
