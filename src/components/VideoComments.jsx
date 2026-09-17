@@ -69,7 +69,7 @@ const VideoComments=({onDeleteRequest,onUnAuthAction})=>{
                 ):(
                     <div>
                         {comments.map((comment)=>(
-                            <CommentCard key={comment._id} comment={comment}
+                            <CommentCard key={comment._id} comment={comment} commentType="video"
                                 onDeleteRequest={onDeleteRequest} 
                                 onUnAuthAction={onUnAuthAction} />
                         ))}

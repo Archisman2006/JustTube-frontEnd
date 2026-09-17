@@ -68,7 +68,7 @@ const TweetComments=({onDeleteRequest,onUnAuthAction})=>{
                 ):(
                     <div>
                         {comments.map((comment)=>(
-                            <CommentCard key={comment._id} comment={comment}
+                            <CommentCard key={comment._id} comment={comment} commentType="tweet"
                                 onDeleteRequest={onDeleteRequest} 
                                 onUnAuthAction={onUnAuthAction} />
                         ))}
